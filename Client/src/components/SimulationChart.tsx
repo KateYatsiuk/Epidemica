@@ -19,13 +19,13 @@ export interface SimulationModelResult {
 function SimulationChart({ time, S, I, R, E, Q, H, V }: Partial<SimulationModelResult>) {
   const chartData = time?.map((_, i) => ({
     day: i,
-    S: S?.[i],
-    I: I?.[i],
-    R: R?.[i],
-    E: E ? E[i] : undefined,
-    Q: Q ? Q[i] : undefined,
-    H: H ? H[i] : undefined,
-    V: V ? V[i] : undefined,
+    S: S?.[i].toFixed(2),
+    I: I?.[i].toFixed(2),
+    R: R?.[i].toFixed(2),
+    E: E ? E[i].toFixed(2) : undefined,
+    Q: Q ? Q[i].toFixed(2) : undefined,
+    H: H ? H[i].toFixed(2) : undefined,
+    V: V ? V[i].toFixed(2) : undefined,
   }));
 
   return (

@@ -68,9 +68,10 @@ const AgentSimulationBox = ({ modelParams }: AgentSimulationBoxProps) => {
   };
 
   return (
-    <div className="p-4">
+    <>
       <canvas
         ref={canvasRef}
+        // TODO: Fix hardcoded values of width/height
         width={700}
         height={500}
         style={{
@@ -98,7 +99,7 @@ const AgentSimulationBox = ({ modelParams }: AgentSimulationBoxProps) => {
           Перезапустити симуляцію
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 

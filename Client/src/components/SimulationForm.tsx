@@ -108,13 +108,13 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData }) => {
         </Field>
       </Flex>
       <Stack gap={10}>
-        <SimpleGrid columns={2} gap={5} width="600px">
-          <InputField name="beta" label="Ймовірність зараження (beta)" control={control} type="number" step={0.01} required />
+        <SimpleGrid columns={2} gap={5}>
+          <InputField name="beta" label="Швидкість зараження (beta)" control={control} type="number" step={0.01} required />
           <InputField name="gamma" label="Швидкість одужання (gamma)" control={control} type="number" step={0.01} required />
           <InputField name="days" label="Кількість днів" control={control} type="number" required />
           <InputField name="n" label="Кількість людей" control={control} type="number" helpText="Кількість людей рівна S+I" readonly required />
-          <InputField name="initialS" label="Початково сприйнятливих (S)" control={control} type="number" required />
-          <InputField name="initialI" label="Початково інфікованих (I)" control={control} type="number" required />
+          <InputField name="initialS" label="Початково сприйнятливі (S)" control={control} type="number" required />
+          <InputField name="initialI" label="Початково інфіковані (I)" control={control} type="number" required />
 
           <ConditionalFields control={control} watch={watch} />
         </SimpleGrid>
