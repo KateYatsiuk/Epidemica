@@ -1,7 +1,7 @@
 import React from "react";
-import InputField from "./core/InputField";
+import InputField from "../core/InputField";
 import { Control, UseFormWatch } from "react-hook-form";
-import { ModelKind } from "../models/simulation";
+import { ModelKind } from "../../models/simulation";
 
 interface ModelSpecificFieldsProps {
   control: Control<any, any>;

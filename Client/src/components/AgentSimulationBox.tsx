@@ -5,10 +5,11 @@ import { AgentSimulation } from '../models/agentSimulation';
 import { useColorMode } from './ui/color-mode';
 
 interface AgentSimulationBoxProps {
-  modelParams: SimulationFormValues
+  modelParams: SimulationFormValues;
+  isActive: boolean;
 }
 
-const AgentSimulationBox = ({ modelParams }: AgentSimulationBoxProps) => {
+const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [currentSim, setCurrentSim] = useState<AgentSimulation | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -57,6 +58,24 @@ const AgentSimulationBox = ({ modelParams }: AgentSimulationBoxProps) => {
     };
 
   }, [modelParams]);
+
+  useEffect(() => {
+    if (!isActive) {
+      currentSim?.stopSimulation();
+      setIsRunning(false);
+    }
+    // else {
+    //   if (!isRunning) {
+    //     if (currentSim) {
+    //       currentSim.startSimulation();
+    //       setIsRunning(true);
+    //     } else {
+    //       const sim = startSimulation();
+    //       return () => sim?.stopSimulation();
+    //     }
+    //   }
+    // }
+  }, [isActive]);
 
   const toggleSimulation = () => {
     if (!currentSim) return;

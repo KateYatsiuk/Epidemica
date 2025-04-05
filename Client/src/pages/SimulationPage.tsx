@@ -1,5 +1,5 @@
 import { Box, Heading, SimpleGrid, Tabs } from "@chakra-ui/react";
-import SimulationForm from "../components/SimulationForm";
+import SimulationForm from "../components/SimulationForms/SimulationForm";
 import SimulationChart, { SimulationModelResult } from "../components/SimulationChart";
 import SimulationStats from "../components/SimulationStats";
 import { useRef, useState } from "react";
@@ -9,10 +9,16 @@ import AgentSimulationBox from "../components/AgentSimulationBox";
 import FullScreenDialog from "../components/core/FullScreenDialog";
 import PDFReportGenerator from "../components/PdfReport/PdfReportGenerator";
 
+enum TabsValues {
+  Chart = "Chart",
+  Agents = "Agents"
+};
+
 const SimulationPage = () => {
   const [data, setData] = useState<SimulationModelResult & { beta?: number; gamma?: number } | null>(null);
   const [modelParams, setModelParams] = useState<SimulationFormValues | null>(null);
   const simulationChartRef = useRef(null);
+  const [activeTab, setActiveTab] = useState<string>(TabsValues.Chart);
 
   const handleFormSubmit = (formData: SimulationFormValues, simulationData: SimulationModelResult & { beta?: number; gamma?: number } | null) => {
     setData(simulationData);
@@ -30,20 +36,25 @@ const SimulationPage = () => {
 
         {data && (
           <Box p={4} borderRadius="lg" boxShadow="md" gridColumn={{ md: "span 5" }}>
-            <Tabs.Root defaultValue="chart" variant="outline">
+            <Tabs.Root
+              defaultValue={TabsValues.Chart}
+              variant="outline"
+              value={activeTab}
+              onValueChange={(e) => setActiveTab(e.value)}
+            >
               <div style={{ display: "flex" }}>
                 <Tabs.List>
-                  <Tabs.Trigger value="chart">
+                  <Tabs.Trigger value={TabsValues.Chart}>
                     Графік та статистика
                   </Tabs.Trigger>
                 </Tabs.List>
                 <Tabs.List>
-                  <Tabs.Trigger value="agents">
+                  <Tabs.Trigger value={TabsValues.Agents}>
                     Симуляція агентів
                   </Tabs.Trigger>
                 </Tabs.List>
               </div>
-              <Tabs.Content value="chart">
+              <Tabs.Content value={TabsValues.Chart}>
                 <FullScreenDialog title="Графік" badgeInfo={`${modelParams?.model[0].toUpperCase()} модель`}>
                   <SimulationChart {...data} />
                   <SimpleGrid columns={{ base: 3, smDown: 1 }} gap={5}>
@@ -75,9 +86,9 @@ const SimulationPage = () => {
                   </Box>
                 </SimpleGrid>
               </Tabs.Content>
-              <Tabs.Content value="agents">
+              <Tabs.Content value={TabsValues.Agents}>
                 {modelParams && (
-                  <AgentSimulationBox modelParams={modelParams} />
+                  <AgentSimulationBox modelParams={modelParams} isActive={activeTab === TabsValues.Agents} />
                 )}
               </Tabs.Content>
             </Tabs.Root>

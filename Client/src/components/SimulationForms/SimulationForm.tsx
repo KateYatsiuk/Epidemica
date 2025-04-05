@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
-import { modelFieldMap, ModelKind, models, SimulationFormValues } from "../models/simulation";
+import { modelFieldMap, ModelKind, models, SimulationFormValues } from "../../models/simulation";
 import { Button, Flex, SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText, SimpleGrid, Stack } from "@chakra-ui/react";
-import { prepareSimulationData } from "../services/simulation.service";
-import { Field } from "./ui/field";
-import InputField from "./core/InputField";
+import { prepareSimulationData } from "../../services/simulation.service";
+import { Field } from "../ui/field";
+import InputField from "../core/InputField";
 import ConditionalFields from "./ConditionalFields";
-import { useApi } from "../api/ApiProvider";
+import { useApi } from "../../api/ApiProvider";
 
 interface SimulationFormProps {
   setData: (formData: SimulationFormValues, simulationData: any) => void;
