@@ -1,12 +1,6 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
-from reportlab.lib.pagesizes import A4
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.lib import colors
-from reportlab.platypus import Table, TableStyle
 from models import db, Simulation
 from simulation import run_simulation
 
@@ -60,71 +54,6 @@ def get_simulation():
     # db.session.add(simulation)
     # db.session.commit()
     return jsonify(result)
-
-@app.route("/api/report", methods=["POST"])
-def generate_report():
-    data = request.json
-    
-    model = data.get("model", "Модель невідома")
-    params = data.get("params", {})
-    stats = data.get("stats", {})
-
-    key_to_label_mapping = {
-      "beta": "Швидкість зараження (beta)",
-      "gamma": "Швидкість одужання (gamma)",
-      "days": "Кількість днів",
-      "n": "Кількість людей",
-      "initialS": "Початково сприйнятливі (S)",
-      "initialI": "Початково інфіковані (I)",
-
-      "r0": "Базове репродуктивне число (R0)",
-      "max_infected": "Максимальна кількість інфікованих",
-      "peak_day": "День піку інфікованих",
-      "final_susceptible": "Кінцева кількість сприйнятливих",
-      "final_recovered": "Кінцева кількість одужалих"
-    }
-
-    pdf_path = "simulation_report.pdf"
-    pdfmetrics.registerFont(TTFont('TNR', 'times.ttf'))
-    c = canvas.Canvas(pdf_path, pagesize=A4)
-    width, height = A4
-    X_INDENT = 75
-    c.setFont("TNR", 16)
-    c.drawString(X_INDENT, height - 50, "SIR Симуляція - Звіт")
-    c.drawString(X_INDENT, height - 70, f"Модель: {str(model).upper()}")
-
-    y_position = height - 230
-
-    param_table_data = [["Вхідний параметр", "Значення"]] + [
-        [key_to_label_mapping.get(k, k), round(v, 4)] for k, v in params.items()
-    ]
-    
-    def create_styled_table(data, y_position):
-        table = Table(data, colWidths=[250, 200])
-
-        table.setStyle(TableStyle([
-            ("BACKGROUND", (0, 0), (-1, 0), "#9333ea"),
-            ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-            ("ALIGN", (0, 0), (-1, -1), "LEFT"),
-            ("FONTNAME", (0, 0), (-1, -1), "TNR"),
-            ("FONTSIZE", (0, 0), (-1, -1), 12),
-            ("BOTTOMPADDING", (0, 0), (-1, 0), 10),
-            ("BACKGROUND", (0, 1), (-1, -1), colors.white),
-            ("GRID", (0, 0), (-1, -1), 1, "#e4e4e7"),
-        ]))
-        table.wrapOn(c, width, height)
-        table.drawOn(c, X_INDENT, y_position)
-
-    create_styled_table(param_table_data, y_position)
-    
-    y_position -= 130
-
-    stats_table_data = [["Показник", "Значення"]] + [
-        [key_to_label_mapping.get(k, k), round(v, 4)] for k, v in stats.items()
-    ]
-    create_styled_table(stats_table_data, y_position)
-    c.save()
-    return send_file(pdf_path, as_attachment=True, download_name="simulation_report.pdf", mimetype="application/pdf")
 
 if __name__ == "__main__":
     app.run(debug=True)

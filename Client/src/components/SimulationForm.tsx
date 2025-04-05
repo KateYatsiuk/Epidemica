@@ -89,7 +89,7 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData }) => {
                 onValueChange={({ value }) => field.onChange(value)}
                 onInteractOutside={() => field.onBlur()}
                 collection={models}
-                bgColor="gray.100"
+                bgColor={{ base: "gray.100", _dark: "gray.800" }}
                 borderRadius="0.25rem"
               >
                 <SelectTrigger>

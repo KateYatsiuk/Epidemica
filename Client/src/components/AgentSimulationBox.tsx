@@ -2,6 +2,7 @@ import { Button } from '@chakra-ui/react';
 import { useRef, useEffect, useState } from 'react';
 import { SimulationFormValues } from '../models/simulation';
 import { AgentSimulation } from '../models/agentSimulation';
+import { useColorMode } from './ui/color-mode';
 
 interface AgentSimulationBoxProps {
   modelParams: SimulationFormValues
@@ -11,6 +12,7 @@ const AgentSimulationBox = ({ modelParams }: AgentSimulationBoxProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [currentSim, setCurrentSim] = useState<AgentSimulation | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
+  const { colorMode } = useColorMode();
 
   const startSimulation = () => {
     if (canvasRef.current) {
@@ -31,7 +33,8 @@ const AgentSimulationBox = ({ modelParams }: AgentSimulationBoxProps) => {
         modelParams.delta,
         modelParams.hRate,
         modelParams.mu,
-        modelParams.vRate
+        modelParams.vRate,
+        colorMode
       );
       setCurrentSim(sim);
       sim.startSimulation();

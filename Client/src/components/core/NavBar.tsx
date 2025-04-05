@@ -9,7 +9,7 @@ import {
   Stack,
   Icon
 } from "@chakra-ui/react"
-import { LogoDarkIcon } from "./LogoDarkIcon"
+import { LogoPurpleIcon } from "./LogoPurpleIcon"
 
 interface Props {
   children: React.ReactNode
@@ -18,7 +18,8 @@ interface Props {
 const Links = ['Історія', 'Про проєкт']
 
 const NavLink = (props: Props) => {
-  const { children } = props
+  const { children } = props;
+
   return (
     <Box
       as="a"
@@ -28,7 +29,7 @@ const NavLink = (props: Props) => {
       _hover={{
         cursor: "pointer",
         textDecoration: "none",
-        bg: "gray.200",
+        bg: { base: "gray.200", _dark: "gray.700" },
       }}>
       {children}
     </Box>
@@ -40,7 +41,7 @@ export default function NavBar() {
 
   return (
     <>
-      <Box bg="gray.100" px={4}>
+      <Box bgColor={{ base: "gray.100", _dark: "gray.800" }} px={4}>
         <Flex h={16} alignItems="center" justifyContent="space-between">
           <IconButton
             size="md"
@@ -53,7 +54,7 @@ export default function NavBar() {
           </IconButton>
           <HStack alignItems="center" gap={4}>
             <Box>
-            <Icon width={35} height={35}><LogoDarkIcon /></Icon>
+            <Icon width={35} height={35}><LogoPurpleIcon /></Icon>
 
             </Box>
             <HStack as={"nav"} display={{ base: "none", md: "flex" }}>
@@ -77,8 +78,6 @@ export default function NavBar() {
           </Box>
         ) : null}
       </Box>
-
-      {/* <Box p={4}>Main Content Here</Box> */}
     </>
   )
 }

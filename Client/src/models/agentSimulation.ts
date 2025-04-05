@@ -1,3 +1,4 @@
+import { ColorMode } from "../components/ui/color-mode";
 import { Agent, AgentsStatesKind, RestrictedArea } from "./agent";
 import { ModelKind } from "./simulation";
 
@@ -19,6 +20,7 @@ export class AgentSimulation {
   animationFrameId: number;
   quarantineArea?: RestrictedArea;
   hospitalArea?: RestrictedArea;
+  colorMode: ColorMode;
   SPREAD_RADIUS = 10;
 
   constructor(
@@ -33,7 +35,8 @@ export class AgentSimulation {
     delta?: number,
     h_rate?: number,
     mu?: number,
-    v_rate?: number
+    v_rate?: number,
+    colorMode?: ColorMode
   ) {
     this.agents = [];
     this.beta = beta;
@@ -50,6 +53,7 @@ export class AgentSimulation {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d')!;
     this.animationFrameId = 0;
+    this.colorMode = colorMode ?? "light";
 
     this.prepareIsolationAreas(modelType);
     this.initializeAgents();
@@ -162,9 +166,9 @@ export class AgentSimulation {
   }
 
   private displayStatistics() {
-    this.ctx.fillStyle = "black";
+    this.ctx.fillStyle = this.colorMode === "light" ? "black" : "white";
     this.ctx.font = "16px Arial";
-    this.ctx.fillText(`Model: ${this.modelType}`, 10, 20);
+    this.ctx.fillText(`Модель: ${this.modelType.toUpperCase()}`, 10, 20);
 
     const stats = this.getStatus();
     this.ctx.fillText(`S: ${stats.susceptible} | `, 10, 40);
