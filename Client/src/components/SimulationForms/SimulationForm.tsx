@@ -65,10 +65,10 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData }) => {
 
   const onSubmit = async (data: SimulationFormValues) => {
     const filteredData = filterFields(data);
-    const params = prepareSimulationData(filteredData);
+    const body = prepareSimulationData(filteredData);
 
     try {
-      const response = await api.post('/simulation', { params });
+      const response = await api.post('/simulation', body);
       setData(filteredData, { ...response.data, beta: data.beta, gamma: data.gamma });
     } catch (error) {
       console.error("Error getting simulation data:", error);

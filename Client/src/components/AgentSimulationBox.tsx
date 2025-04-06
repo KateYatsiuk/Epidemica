@@ -24,7 +24,7 @@ const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) 
     else if (isTablet) return { width: 500, height: 350 };
     return { width: 320, height: 220 };
   };
-  
+
   const { width: canvasWidth, height: canvasHeight } = getCanvasSize();
 
   const startSimulation = () => {
@@ -58,17 +58,17 @@ const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) 
   };
 
   useEffect(() => {
-    const sim = startSimulation();
-
-    return () => {
-      if (sim) {
-        sim.stopSimulation();
-      }
-      if (currentSim) {
-        currentSim.stopSimulation();
-      }
-    };
-
+    if (isActive) {
+      const sim = startSimulation();
+      return () => {
+        if (sim) {
+          sim.stopSimulation();
+        }
+        if (currentSim) {
+          currentSim.stopSimulation();
+        }
+      };
+    }
   }, [modelParams, canvasWidth, canvasHeight]);
 
   useEffect(() => {

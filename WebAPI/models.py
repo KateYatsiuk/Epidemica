@@ -1,10 +1,14 @@
+import uuid
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 db = SQLAlchemy()
 
+def generate_guid():
+    return str(uuid.uuid4())
+
 class Simulation(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(36), primary_key=True, default=generate_guid)
     model = db.Column(db.String(20), nullable=False)
     N = db.Column(db.Integer, nullable=False, default=100)
     initialS=db.Column(db.Integer, nullable=False, default=99)
