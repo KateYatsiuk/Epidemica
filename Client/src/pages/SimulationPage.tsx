@@ -29,13 +29,13 @@ const SimulationPage = () => {
     <>
       <Heading size="3xl" mb={6}>SIR Симуляція</Heading>
 
-      <SimpleGrid columns={{ base: 1, md: 9 }} gap={10}>
-        <Box p={4} borderRadius="lg" boxShadow="md" gridColumn={{ md: "span 4" }} height="fit-content">
+      <SimpleGrid columns={{ base: 1, xl: 9 }} gap={10}>
+        <Box p={4} borderRadius="lg" boxShadow="md" gridColumn={{ xl: "span 4" }} height="fit-content">
           <SimulationForm setData={handleFormSubmit} />
         </Box>
 
         {data && (
-          <Box p={4} borderRadius="lg" boxShadow="md" gridColumn={{ md: "span 5" }}>
+          <Box p={4} borderRadius="lg" boxShadow="md" gridColumn={{ xl: "span 5" }}>
             <Tabs.Root
               defaultValue={TabsValues.Chart}
               variant="outline"
@@ -86,7 +86,12 @@ const SimulationPage = () => {
                   </Box>
                 </SimpleGrid>
               </Tabs.Content>
-              <Tabs.Content value={TabsValues.Agents}>
+              <Tabs.Content value={TabsValues.Agents}
+                style={{
+                  display: "grid", gap: "10px",
+                  justifyContent: "center"
+                }}
+                >
                 {modelParams && (
                   <AgentSimulationBox modelParams={modelParams} isActive={activeTab === TabsValues.Agents} />
                 )}

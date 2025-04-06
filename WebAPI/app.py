@@ -13,7 +13,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 migrate = Migrate(app, db)
 
-@app.route("/api/simulation", methods=["GET"])
+@app.route("/api/simulation", methods=["POST"])
 def get_simulation():
     model = request.args.get("model", "sir")
     beta = float(request.args.get("beta", 0.3))

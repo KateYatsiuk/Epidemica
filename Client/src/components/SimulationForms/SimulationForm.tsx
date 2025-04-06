@@ -68,10 +68,10 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData }) => {
     const params = prepareSimulationData(filteredData);
 
     try {
-      const response = await api.get('/simulation', { params });
+      const response = await api.post('/simulation', { params });
       setData(filteredData, { ...response.data, beta: data.beta, gamma: data.gamma });
     } catch (error) {
-      console.error("Error fetching simulation data:", error);
+      console.error("Error getting simulation data:", error);
     }
   };
 

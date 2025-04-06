@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react';
+import { Button, useMediaQuery } from '@chakra-ui/react';
 import { useRef, useEffect, useState } from 'react';
 import { SimulationFormValues } from '../models/simulation';
 import { AgentSimulation } from '../models/agentSimulation';
@@ -14,6 +14,18 @@ const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) 
   const [currentSim, setCurrentSim] = useState<AgentSimulation | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const { colorMode } = useColorMode();
+  const [isTablet, isDesktop] = useMediaQuery([
+    "(min-width: 768px)",
+    "(min-width: 1024px)",
+  ]);
+
+  const getCanvasSize = () => {
+    if (isDesktop) return { width: 700, height: 500 };
+    else if (isTablet) return { width: 500, height: 350 };
+    return { width: 320, height: 220 };
+  };
+  
+  const { width: canvasWidth, height: canvasHeight } = getCanvasSize();
 
   const startSimulation = () => {
     if (canvasRef.current) {
@@ -57,7 +69,7 @@ const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) 
       }
     };
 
-  }, [modelParams]);
+  }, [modelParams, canvasWidth, canvasHeight]);
 
   useEffect(() => {
     if (!isActive) {
@@ -93,15 +105,14 @@ const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) 
     <>
       <canvas
         ref={canvasRef}
-        // TODO: Fix hardcoded values of width/height
-        width={700}
-        height={500}
+        width={canvasWidth}
+        height={canvasHeight}
         style={{
           border: "1px solid #E2E8F0",
           marginTop: "20px",
           borderRadius: "0.5rem"
         }}
-      ></canvas>
+      />
 
       <div style={{ marginTop: '10px' }}>
         <Button
