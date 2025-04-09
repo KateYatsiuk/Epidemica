@@ -1,5 +1,6 @@
 import { CloseIcon } from "@chakra-ui/icons/Close"
 import { HamburgerIcon } from "@chakra-ui/icons/Hamburger"
+import { Link as ChakraLink } from "@chakra-ui/react"
 import {
   Box,
   Flex,
@@ -11,28 +12,33 @@ import {
 } from "@chakra-ui/react"
 import { LogoPurpleIcon } from "./LogoPurpleIcon"
 
-interface Props {
-  children: React.ReactNode
+interface NavLinkProps {
+  children: React.ReactNode;
+  href: string;
 }
 
-const Links = ['Історія', 'Про проєкт']
+const Links = [
+  { label: "Симуляція", href: "/" },
+  { label: "Історія", href: "/history" },
+  { label: "Про проєкт", href: "/about" },
+];
 
-const NavLink = (props: Props) => {
-  const { children } = props;
+const NavLink = (props: NavLinkProps) => {
+  const { children, href } = props;
 
   return (
-    <Box
-      as="a"
+    <ChakraLink
+      href={href}
       px={2}
       py={1}
       rounded="md"
       _hover={{
-        cursor: "pointer",
         textDecoration: "none",
         bg: { base: "gray.200", _dark: "gray.700" },
-      }}>
+      }}
+    >
       {children}
-    </Box>
+    </ChakraLink>
   )
 }
 
@@ -54,17 +60,17 @@ export default function NavBar() {
           </IconButton>
           <HStack alignItems="center" gap={4}>
             <Box>
-            <Icon width={35} height={35}><LogoPurpleIcon /></Icon>
+              <Icon width={35} height={35}><LogoPurpleIcon /></Icon>
 
             </Box>
             <HStack as={"nav"} display={{ base: "none", md: "flex" }}>
               {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+                <NavLink key={link.label} href={link.href}>{link.label}</NavLink>
               ))}
             </HStack>
           </HStack>
           <Flex alignItems="center">
-            <NavLink key="Sign out">Вийти</NavLink>
+            <NavLink key="Sign out" href="/login">Вийти</NavLink>
           </Flex>
         </Flex>
 
@@ -72,12 +78,12 @@ export default function NavBar() {
           <Box pb={4} display={{ md: "none" }}>
             <Stack as="nav">
               {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+                <NavLink key={link.label} href={link.href}>{link.label}</NavLink>
               ))}
             </Stack>
           </Box>
         ) : null}
       </Box>
     </>
-  )
-}
+  );
+};

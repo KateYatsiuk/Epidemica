@@ -70,3 +70,24 @@ export const modelFieldMap: Record<ModelKind, (keyof SimulationFormValues)[]> = 
   [ModelKind.SEIHR]: ["model", "beta", "gamma", "sigma", "hRate", "mu", "days", "n", "initialS", "initialI"],
   [ModelKind.SEIRV]: ["model", "beta", "gamma", "sigma", "vRate", "days", "n", "initialS", "initialI"],
 };
+
+export interface SimulationHistory {
+  id: string;
+  model: string;
+  created_at: string;
+  days: number;
+  max_infected: number;
+  peak_day: number;
+};
+
+export interface SimulationForComparison {
+  id: string;
+  model: string;
+  created_at: string;
+  days: number;
+  max_infected: number;
+  peak_day: number;
+  final_susceptible: number;
+  final_recovered: number;
+  curve: { day: number; infected: number }[];
+};

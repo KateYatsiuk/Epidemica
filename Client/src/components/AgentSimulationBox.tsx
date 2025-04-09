@@ -75,18 +75,17 @@ const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) 
     if (!isActive) {
       currentSim?.stopSimulation();
       setIsRunning(false);
+    } else {
+      if (!currentSim && !isRunning) {
+        const sim = startSimulation();
+        return () => {
+          if (sim) {
+            sim.stopSimulation();
+            setIsRunning(false);
+          }
+        }
+      }
     }
-    // else {
-    //   if (!isRunning) {
-    //     if (currentSim) {
-    //       currentSim.startSimulation();
-    //       setIsRunning(true);
-    //     } else {
-    //       const sim = startSimulation();
-    //       return () => sim?.stopSimulation();
-    //     }
-    //   }
-    // }
   }, [isActive]);
 
   const toggleSimulation = () => {

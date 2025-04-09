@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
 from flask_migrate import Migrate
 from models import Simulation, db
@@ -56,6 +56,78 @@ def post_simulation():
     db.session.add(simulation)
     db.session.commit()
     return jsonify(result)
+
+@app.route("/api/history", methods=["GET"])
+def get_history():
+    page = int(request.args.get("page", 1))
+    page_size = int(request.args.get("page_size", 10))
+
+    query = Simulation.query.order_by(Simulation.created_at.desc())
+    total = query.count()
+    simulations = query.offset((page - 1) * page_size).limit(page_size).all()
+
+    return jsonify({
+        "simulations": [
+            {
+                "id": s.id,
+                "model": s.model,
+                "created_at": s.created_at.isoformat(),
+                "days": s.days,
+                "max_infected": s.max_infected,
+                "peak_day": s.peak_day
+            } for s in simulations
+        ],
+        "total": total,
+        "page": page,
+        "page_size": page_size
+    })
+
+@app.route("/api/simulation/<string:sim_id>", methods=["DELETE"])
+def delete_simulation(sim_id):
+    simulation = Simulation.query.get(sim_id)
+
+    if simulation is None:
+        abort(404, description="Simulation not found")
+
+    db.session.delete(simulation)
+    db.session.commit()
+
+    return jsonify({"message": f"Simulation with ID {sim_id} successfully deleted"})
+
+@app.route("/api/compare", methods=["POST"])
+def compare_simulations():
+    try:
+        simulation_ids = request.json.get("simulation_ids", [])
+        
+        if not simulation_ids:
+            return jsonify({"error": "No simulation IDs provided"}), 400
+        
+        simulations = Simulation.query.filter(Simulation.id.in_(simulation_ids)).all()
+        
+        if not simulations:
+            return jsonify({"error": "Simulations not found"}), 404
+        
+        response_data = [
+            {
+                "id": s.id,
+                "model": s.model,
+                "created_at": s.created_at.isoformat(),
+                "days": s.days,
+                "max_infected": s.max_infected,
+                "peak_day": s.peak_day,
+                "final_susceptible": s.final_susceptible,
+                "final_recovered": s.final_recovered,
+                # "curve": [
+                #     {"day": day, "infected": infected} for day, infected in enumerate(s.infected_curve)
+                # ]
+            }
+            for s in simulations
+        ]
+        
+        return jsonify({"simulations": response_data})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
