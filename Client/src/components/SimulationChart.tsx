@@ -14,6 +14,7 @@ export interface SimulationModelResult {
   final_susceptible: number;
   max_infected: number;
   peak_day: number;
+  r0: number;
 }
 
 function SimulationChart({ time, S, I, R, E, Q, H, V }: Partial<SimulationModelResult>) {

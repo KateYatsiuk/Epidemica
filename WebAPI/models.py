@@ -1,5 +1,6 @@
 import uuid
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.hybrid import hybrid_property
 from datetime import datetime
 
 db = SQLAlchemy()
@@ -29,3 +30,7 @@ class Simulation(db.Model):
     final_recovered = db.Column(db.Float, nullable=False)
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    @hybrid_property
+    def r0(self):
+        return round(self.beta / self.gamma, 4)

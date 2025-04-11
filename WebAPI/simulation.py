@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.integrate import odeint
 
+# TODO: improve code
 def sir_model(y, t, beta, gamma, N):
     S, I, R = y
     dSdt = -beta * S * I / N
@@ -65,7 +66,8 @@ def run_simulation(model="sir", beta=0.3, gamma=0.1, sigma=0.2, delta=0.1, v_rat
         return {
             "time": t.tolist(), "S": S.tolist(), "I": I.tolist(), "R": R.tolist(),
             "max_infected": max(I), "peak_day": int(t[np.argmax(I)]),
-            "final_susceptible": S[-1], "final_recovered": R[-1]
+            "final_susceptible": S[-1], "final_recovered": R[-1],
+            "r0": round(beta / gamma)
         }
 
     elif model == "seir":
@@ -75,7 +77,8 @@ def run_simulation(model="sir", beta=0.3, gamma=0.1, sigma=0.2, delta=0.1, v_rat
         return {
             "time": t.tolist(), "S": S.tolist(), "E": E.tolist(), "I": I.tolist(), "R": R.tolist(),
             "max_infected": max(I), "peak_day": int(t[np.argmax(I)]),
-            "final_susceptible": S[-1], "final_recovered": R[-1]
+            "final_susceptible": S[-1], "final_recovered": R[-1],
+            "r0": round(beta / gamma)
         }
 
     elif model == "seiqr":
@@ -85,7 +88,8 @@ def run_simulation(model="sir", beta=0.3, gamma=0.1, sigma=0.2, delta=0.1, v_rat
         return {
             "time": t.tolist(), "S": S.tolist(), "E": E.tolist(), "I": I.tolist(), "Q": Q.tolist(), "R": R.tolist(),
             "max_infected": max(I), "peak_day": int(t[np.argmax(I)]),
-            "final_susceptible": S[-1], "final_recovered": R[-1]
+            "final_susceptible": S[-1], "final_recovered": R[-1],
+            "r0": round(beta / gamma)
         }
 
     elif model == "seirv":
@@ -95,7 +99,8 @@ def run_simulation(model="sir", beta=0.3, gamma=0.1, sigma=0.2, delta=0.1, v_rat
         return {
             "time": t.tolist(), "S": S.tolist(), "E": E.tolist(), "I": I.tolist(), "R": R.tolist(), "V": V.tolist(),
             "max_infected": max(I), "peak_day": int(t[np.argmax(I)]),
-            "final_susceptible": S[-1], "final_recovered": R[-1], "final_vaccinated": V[-1]
+            "final_susceptible": S[-1], "final_recovered": R[-1], "final_vaccinated": V[-1],
+            "r0": round(beta / gamma)
         }
 
     elif model == "seihr":
@@ -105,7 +110,8 @@ def run_simulation(model="sir", beta=0.3, gamma=0.1, sigma=0.2, delta=0.1, v_rat
         return {
             "time": t.tolist(), "S": S.tolist(), "E": E.tolist(), "I": I.tolist(), "H": H.tolist(), "R": R.tolist(),
             "max_infected": max(I), "peak_day": int(t[np.argmax(I)]),
-            "final_susceptible": S[-1], "final_recovered": R[-1]
+            "final_susceptible": S[-1], "final_recovered": R[-1],
+            "r0": round(beta / gamma)
         }
 
     elif model == "sir_diffusion":
@@ -116,7 +122,8 @@ def run_simulation(model="sir", beta=0.3, gamma=0.1, sigma=0.2, delta=0.1, v_rat
             "time": t.tolist(), "S1": S1.tolist(), "I1": I1.tolist(), "R1": R1.tolist(),
             "S2": S2.tolist(), "I2": I2.tolist(), "R2": R2.tolist(),
             "max_infected": max(max(I1), max(I2)), "peak_day": int(t[np.argmax(I1)]),
-            "final_susceptible": S1[-1] + S2[-1], "final_recovered": R1[-1] + R2[-1]
+            "final_susceptible": S1[-1] + S2[-1], "final_recovered": R1[-1] + R2[-1],
+            "r0": round(beta / gamma)
         }
     
     else:

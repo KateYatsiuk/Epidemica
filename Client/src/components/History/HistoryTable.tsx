@@ -1,8 +1,9 @@
-import { Checkbox, Tag, HStack, IconButton, Table, Box, CheckboxCheckedChangeDetails } from "@chakra-ui/react";
+import { Checkbox, HStack, IconButton, Table, Box, CheckboxCheckedChangeDetails } from "@chakra-ui/react";
 import { LuFileChartColumn, LuTrash2 } from "react-icons/lu";
 import { SimulationHistory } from "../../models/simulation";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDeleteDialog } from "../core/ConfirmDeleteDialog";
+import { hostoryColumns } from "./history-columns";
 
 interface HistoryTableProps {
   items: SimulationHistory[];
@@ -17,28 +18,6 @@ const HistoryTable = ({
 }: HistoryTableProps) => {
   const navigate = useNavigate();
 
-  const columns = [
-    {
-      key: "model", header: "Модель", render: (sim: SimulationHistory) => (
-        <Tag.Root colorPalette="purple" size="xl">
-          <Tag.Label>{sim.model.toUpperCase()}</Tag.Label>
-        </Tag.Root>
-      ),
-    },
-    {
-      key: "created_at", header: "Дата", render: (sim: SimulationHistory) =>
-        `${new Date(sim.created_at).toLocaleDateString("uk-UA")}
-        ${new Date(sim.created_at).toLocaleTimeString("uk-UA", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })}`
-    },
-    { key: "days", header: "Днів", render: (sim: SimulationHistory) => sim.days },
-    { key: "max_infected", header: "Пік інфікованих", render: (sim: SimulationHistory) => sim.max_infected.toFixed(2) },
-    { key: "peak_day", header: "День піку", render: (sim: SimulationHistory) => sim.peak_day },
-  ];
-
   return (
     <Box w="full" overflowX="auto" borderWidth="1px" borderRadius="lg">
       <Table.Root variant="line" colorScheme="gray" fontSize="md">
@@ -47,6 +26,7 @@ const HistoryTable = ({
             <Table.ColumnHeader>
               <Checkbox.Root
                 colorPalette="purple"
+                variant="subtle"
                 checked={selectedIds.length === items.length}
                 onCheckedChange={selectAll}
               >
@@ -54,7 +34,7 @@ const HistoryTable = ({
                 <Checkbox.Control />
               </Checkbox.Root>
             </Table.ColumnHeader>
-            {columns.map(col => (
+            {hostoryColumns.map(col => (
               <Table.ColumnHeader key={col.key}>{col.header}</Table.ColumnHeader>
             ))}
             <Table.ColumnHeader></Table.ColumnHeader>
@@ -66,6 +46,7 @@ const HistoryTable = ({
               <Table.Cell>
                 <Checkbox.Root
                   colorPalette="purple"
+                  variant="subtle"
                   checked={selectedIds.includes(sim.id)}
                   onCheckedChange={() => onToggleSelect(sim.id)}
                 >
@@ -73,7 +54,7 @@ const HistoryTable = ({
                   <Checkbox.Control />
                 </Checkbox.Root>
               </Table.Cell>
-              {columns.map(col => (
+              {hostoryColumns.map(col => (
                 <Table.Cell key={col.key}>{col.render(sim)}</Table.Cell>
               ))}
               <Table.Cell>

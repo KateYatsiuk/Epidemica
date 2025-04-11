@@ -41,6 +41,7 @@ const SimulationComparison = () => {
     { key: "peak_day", header: "День піку", render: (sim: SimulationForComparison) => sim.peak_day },
     { key: "final_susceptible", header: "Кінцеві S", render: (sim: SimulationForComparison) => sim.final_susceptible },
     { key: "final_recovered", header: "Кінцеві R", render: (sim: SimulationForComparison) => sim.final_recovered },
+    { key: "r0", header: "Базове репродуктивне число R0", render: (sim: SimulationForComparison) => sim.r0 },
   ];
 
   useEffect(() => {

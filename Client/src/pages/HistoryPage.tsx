@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { Button, HStack, VStack, Heading, Spinner, CheckboxCheckedChangeDetails, Box } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  VStack,
+  Heading,
+  Spinner,
+  CheckboxCheckedChangeDetails,
+  Box,
+  useBreakpointValue
+} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useApi } from "../api/ApiProvider";
 import { Tooltip } from "../components/ui/tooltip";
@@ -7,6 +16,8 @@ import { toaster } from "../components/ui/toaster";
 import { SimulationHistory } from "../models/simulation";
 import HistoryTable from "../components/History/HistoryTable";
 import PaginationFooter from "../components/History/PaginationFooter";
+import EmptyHistory from "../components/History/EmptyHistory";
+import HistoryCardList from "../components/History/HistoryCardList";
 
 const defaultPageSize = 10;
 
@@ -18,6 +29,7 @@ const HistoryPage = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const isMobile = useBreakpointValue({ base: true, md: false });
 
   useEffect(() => {
     const fetchSimulations = async () => {
@@ -85,22 +97,35 @@ const HistoryPage = () => {
         </Tooltip>
       </HStack>
 
-      <HistoryTable
-        items={simulations}
-        selectedIds={selectedIds}
-        onToggleSelect={toggleSelect}
-        selectAll={handleCheckBox}
-        onDelete={handleDelete}
-      />
-
-    <Box marginLeft="auto">
-      <PaginationFooter
-        page={page}
-        pageSize={defaultPageSize}
-        total={total}
-        onPageChange={setPage}
-      />
-      </Box>
+      {simulations.length > 0 ? (
+        <>
+          {isMobile ? (
+            <HistoryCardList
+              items={simulations}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelect}
+              onDelete={handleDelete}
+            />
+          ) : (
+            <HistoryTable
+              items={simulations}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelect}
+              selectAll={handleCheckBox}
+              onDelete={handleDelete}
+            />
+          )}
+          <Box marginLeft="auto">
+            <PaginationFooter
+              page={page}
+              pageSize={defaultPageSize}
+              total={total}
+              onPageChange={setPage}
+            />
+          </Box>
+        </>
+      ) : <EmptyHistory />
+      }
     </VStack>
   );
 };

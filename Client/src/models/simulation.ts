@@ -42,7 +42,6 @@ interface LineConfig {
   label: string;
 };
 
-
 export const stateColors: Record<AgentsStatesKind, string> = {
   [AgentsStatesKind.Susceptible]: "blue",
   [AgentsStatesKind.Exposed]: "orange",
@@ -78,6 +77,7 @@ export interface SimulationHistory {
   days: number;
   max_infected: number;
   peak_day: number;
+  r0: number;
 };
 
 export interface SimulationForComparison {
@@ -89,5 +89,6 @@ export interface SimulationForComparison {
   peak_day: number;
   final_susceptible: number;
   final_recovered: number;
+  r0: number;
   curve: { day: number; infected: number }[];
 };

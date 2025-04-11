@@ -74,7 +74,8 @@ def get_history():
                 "created_at": s.created_at.isoformat(),
                 "days": s.days,
                 "max_infected": s.max_infected,
-                "peak_day": s.peak_day
+                "peak_day": s.peak_day,
+                "r0": s.r0
             } for s in simulations
         ],
         "total": total,
@@ -117,6 +118,7 @@ def compare_simulations():
                 "peak_day": s.peak_day,
                 "final_susceptible": s.final_susceptible,
                 "final_recovered": s.final_recovered,
+                "r0": s.r0
                 # "curve": [
                 #     {"day": day, "infected": infected} for day, infected in enumerate(s.infected_curve)
                 # ]
