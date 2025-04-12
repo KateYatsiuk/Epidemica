@@ -16,10 +16,10 @@ export const prepareSimulationData = (formValues: SimulationFormValues): Record<
   if (model === ModelKind.SEIQR) params.delta = formValues.delta!;
   if (model === ModelKind.SEIRV) params.vRate = formValues.vRate!;
   if (model === ModelKind.SEIHR) params.hRate = formValues.hRate!;
-  if (model === ModelKind.SIR_DIFFUSION) {
-    params.mu = formValues.mu!;
-    params.D = formValues.D!;
-  }
+  // if (model === ModelKind.SIR_DIFFUSION) {
+  //   params.mu = formValues.mu!;
+  //   params.D = formValues.D!;
+  // }
 
   return params;
 };

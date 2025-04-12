@@ -20,10 +20,11 @@ class Simulation(db.Model):
     delta = db.Column(db.Float)  # Для SEIHR, SEIQR
     v_rate = db.Column(db.Float)  # Для SEIRV
     h_rate = db.Column(db.Float)  # Для SEIHR
+    # TODO: delete diffusion
     mu = db.Column(db.Float)  # Для SIR-diffusion
     D = db.Column(db.Float)  # Для SIR-diffusion
-
     days = db.Column(db.Integer, nullable=False)
+
     max_infected = db.Column(db.Float, nullable=False)
     peak_day = db.Column(db.Integer, nullable=False)
     final_susceptible = db.Column(db.Float, nullable=False)
@@ -34,3 +35,11 @@ class Simulation(db.Model):
     @hybrid_property
     def r0(self):
         return round(self.beta / self.gamma, 4)
+    
+    def to_dict(self):
+        data = {
+            c.name: getattr(self, c.name)
+            for c in self.__table__.columns
+        }
+        data["created_at"] = self.created_at.isoformat() if self.created_at else None
+        return data

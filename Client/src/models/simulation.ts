@@ -23,7 +23,7 @@ export enum ModelKind {
   SEIQR = "seiqr",
   SEIRV = "seirv",
   SEIHR = "seihr",
-  SIR_DIFFUSION = "sir_diffusion",
+  // SIR_DIFFUSION = "sir_diffusion",
 }
 
 export const models = createListCollection({
@@ -33,7 +33,7 @@ export const models = createListCollection({
     { label: "SEIQR", value: ModelKind.SEIQR },
     { label: "SEIRV", value: ModelKind.SEIRV },
     { label: "SEIHR", value: ModelKind.SEIHR },
-    { label: "SIR (з дифузією)", value: ModelKind.SIR_DIFFUSION },
+    // { label: "SIR (з дифузією)", value: ModelKind.SIR_DIFFUSION },
   ],
 })
 

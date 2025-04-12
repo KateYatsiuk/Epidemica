@@ -1,13 +1,15 @@
-import { Box, Heading, SimpleGrid, Tabs } from "@chakra-ui/react";
+import { Alert, Box, Button, Heading, SimpleGrid, Tabs } from "@chakra-ui/react";
 import SimulationForm from "../components/SimulationForms/SimulationForm";
 import SimulationChart, { SimulationModelResult } from "../components/SimulationChart";
 import SimulationStats from "../components/SimulationStats";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import SimulationChartLegend from "../components/SimulationChartLegend";
-import { SimulationFormValues } from "../models/simulation";
+import { ModelKind, SimulationFormValues } from "../models/simulation";
 import AgentSimulationBox from "../components/AgentSimulationBox";
 import FullScreenDialog from "../components/core/FullScreenDialog";
 import PDFReportGenerator from "../components/PdfReport/PdfReportGenerator";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useApi } from "../api/ApiProvider";
 
 enum TabsValues {
   Chart = "Chart",
@@ -15,26 +17,107 @@ enum TabsValues {
 };
 
 const SimulationPage = () => {
-  const [data, setData] = useState<SimulationModelResult & { beta?: number; gamma?: number } | null>(null);
-  const [modelParams, setModelParams] = useState<SimulationFormValues | null>(null);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const simId = searchParams.get("id");
+  const { api } = useApi();
+  const [data, setData] = useState<SimulationModelResult | null>(null);
+  const [modelParams, setModelParams] = useState<SimulationFormValues | null | undefined>(undefined);
   const simulationChartRef = useRef(null);
   const [activeTab, setActiveTab] = useState<string>(TabsValues.Chart);
 
-  const handleFormSubmit = (formData: SimulationFormValues, simulationData: SimulationModelResult & { beta?: number; gamma?: number } | null) => {
-    setData(simulationData);
+  useEffect(() => {
+    const fetchSimById = async () => {
+      if (!simId) {
+        setModelParams(null);
+        return;
+      }
+
+      try {
+        const res = await api.get(`/simulation/${simId}`);
+        const simulation = res.data;
+
+        const formValues: SimulationFormValues = {
+          model: [simulation.model as ModelKind],
+          initialS: simulation.initialS,
+          initialI: simulation.initialI,
+          beta: simulation.beta,
+          gamma: simulation.gamma,
+          n: simulation.N,
+          days: simulation.days,
+          sigma: simulation.sigma,
+          delta: simulation.delta,
+          vRate: simulation.vRate,
+          hRate: simulation.hRate,
+          mu: simulation.mu,
+          D: simulation.D,
+        };
+
+        const resultParams: SimulationModelResult = {
+          time: [], S: [], I: [], R: [],
+          final_recovered: simulation.final_recovered,
+          final_susceptible: simulation.final_susceptible,
+          max_infected: simulation.max_infected,
+          peak_day: simulation.peak_day,
+          r0: simulation.r0
+        };
+
+        setModelParams(formValues);
+        setData(resultParams);
+      } catch (err) {
+        console.error("Не вдалося завантажити симуляцію", err);
+      }
+    };
+
+    fetchSimById();
+  }, [simId]);
+
+  const handleFormSubmit = (formData: SimulationFormValues, simulationData: SimulationModelResult | null) => {
+    if (simId) {
+      setData(prevData => {
+        if (!prevData) return simulationData as SimulationModelResult;
+
+        return {
+          ...prevData,
+          ...simulationData,
+        } as SimulationModelResult;
+      });
+    } else {
+      setData(simulationData);
+    }
     setModelParams(formData);
   };
 
   return (
     <>
-      <Heading size="3xl" mb={6}>SIR Симуляція</Heading>
-
+      <div style={{ marginBottom: "16px" }}>
+        <Heading size="3xl" mb={2}>SIR Симуляція</Heading>
+        {simId && (
+          <Alert.Root
+            status="info"
+            title="У режимі перегляду існуючої симуляції поля недоступні для редагуванння"
+            width="fit-content"
+            colorPalette="purple"
+            p={2}
+            alignItems="center"
+          >
+            <Alert.Indicator />
+            <Alert.Title>У режимі перегляду існуючої симуляції поля недоступні для редагуванння</Alert.Title>
+            <Alert.Content>
+              <Button colorPalette="purple" size="2xs" padding={15} onClick={() => navigate("/")}>
+                Створити нову
+              </Button>
+            </Alert.Content>
+          </Alert.Root>
+        )}
+      </div>
       <SimpleGrid columns={{ base: 1, xl: 9 }} gap={10}>
-        <Box p={4} borderRadius="lg" boxShadow="md" gridColumn={{ xl: "span 4" }} height="fit-content">
-          <SimulationForm setData={handleFormSubmit} />
-        </Box>
-
-        {data && (
+        {modelParams !== undefined ? (
+          <Box p={4} borderRadius="lg" boxShadow="md" gridColumn={{ xl: "span 4" }} height="fit-content">
+            <SimulationForm setData={handleFormSubmit} defaultValues={simId && modelParams ? modelParams : undefined} />
+          </Box>
+        ) : null}
+        {data && data.S.length > 0 && (
           <Box p={4} borderRadius="lg" boxShadow="md" gridColumn={{ xl: "span 5" }}>
             <Tabs.Root
               defaultValue={TabsValues.Chart}
@@ -91,7 +174,7 @@ const SimulationPage = () => {
                   display: "grid", gap: "10px",
                   justifyContent: "center"
                 }}
-                >
+              >
                 {modelParams && (
                   <AgentSimulationBox modelParams={modelParams} isActive={activeTab === TabsValues.Agents} />
                 )}

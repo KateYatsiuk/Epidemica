@@ -48,7 +48,7 @@ const HistoryCardList = ({
                 colorPalette="purple"
                 aria-label="Переглянути"
                 variant="ghost"
-                onClick={() => navigate(`/simulation/${sim.id}`)}
+                onClick={() => navigate(`/?id=${sim.id}`)}
               >
                 <LuFileChartColumn />
               </IconButton>

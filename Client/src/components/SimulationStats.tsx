@@ -4,7 +4,7 @@ import React from "react";
 import { InfoTip } from "./ui/toggle-tip";
 
 interface SimulationStatsProps {
-  data: SimulationModelResult & { beta?: number; gamma?: number };
+  data: SimulationModelResult;
 }
 
 const SimulationStats = ({ data }: SimulationStatsProps) => {

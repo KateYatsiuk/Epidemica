@@ -1,7 +1,17 @@
 import React, { useEffect } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { modelFieldMap, ModelKind, models, SimulationFormValues } from "../../models/simulation";
-import { Button, Flex, SelectContent, SelectItem, SelectRoot, SelectTrigger, SelectValueText, SimpleGrid, Stack } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+  SimpleGrid,
+  Stack
+} from "@chakra-ui/react";
 import { prepareSimulationData } from "../../services/simulation.service";
 import { Field } from "../ui/field";
 import InputField from "../core/InputField";
@@ -10,12 +20,13 @@ import { useApi } from "../../api/ApiProvider";
 
 interface SimulationFormProps {
   setData: (formData: SimulationFormValues, simulationData: any) => void;
+  defaultValues?: SimulationFormValues;
 }
 
-const SimulationForm: React.FC<SimulationFormProps> = ({ setData }) => {
+const SimulationForm: React.FC<SimulationFormProps> = ({ setData, defaultValues }) => {
   const { api } = useApi();
   const { control, handleSubmit, watch, setValue } = useForm<SimulationFormValues>({
-    defaultValues: {
+    defaultValues: defaultValues ?? {
       model: [ModelKind.SIR],
       beta: 0.3,
       gamma: 0.1,
@@ -68,8 +79,13 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData }) => {
     const body = prepareSimulationData(filteredData);
 
     try {
-      const response = await api.post('/simulation', body);
-      setData(filteredData, { ...response.data, beta: data.beta, gamma: data.gamma });
+      if (defaultValues) {
+        const response = await api.post('/simulation/view', body);
+        setData(filteredData, { ...response.data });
+      } else {
+        const response = await api.post('/simulation', body);
+        setData(filteredData, { ...response.data });
+      }
     } catch (error) {
       console.error("Error getting simulation data:", error);
     }
@@ -91,6 +107,7 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData }) => {
                 collection={models}
                 bgColor={{ base: "gray.100", _dark: "gray.800" }}
                 borderRadius="0.25rem"
+                readOnly={!!defaultValues}
               >
                 <SelectTrigger>
                   <SelectValueText placeholder="Оберіть модель" />
@@ -109,14 +126,14 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData }) => {
       </Flex>
       <Stack gap={10}>
         <SimpleGrid columns={2} gap={5}>
-          <InputField name="beta" label="Швидкість зараження (beta)" control={control} type="number" step={0.01} required />
-          <InputField name="gamma" label="Швидкість одужання (gamma)" control={control} type="number" step={0.01} required />
-          <InputField name="days" label="Кількість днів" control={control} type="number" required />
-          <InputField name="n" label="Кількість людей" control={control} type="number" helpText="Кількість людей рівна S+I" readonly required />
-          <InputField name="initialS" label="Початково сприйнятливі (S)" control={control} type="number" required />
-          <InputField name="initialI" label="Початково інфіковані (I)" control={control} type="number" required />
+          <InputField name="beta" label="Швидкість зараження (beta)" control={control} type="number" step={0.01} required readonly={!!defaultValues} />
+          <InputField name="gamma" label="Швидкість одужання (gamma)" control={control} type="number" step={0.01} required readonly={!!defaultValues} />
+          <InputField name="days" label="Кількість днів" control={control} type="number" required readonly={!!defaultValues} />
+          <InputField name="n" label="Кількість людей" control={control} type="number" helpText="Кількість людей рівна S+I" required readonly />
+          <InputField name="initialS" label="Початково сприйнятливі (S)" control={control} type="number" required readonly={!!defaultValues} />
+          <InputField name="initialI" label="Початково інфіковані (I)" control={control} type="number" required readonly={!!defaultValues} />
 
-          <ConditionalFields control={control} watch={watch} />
+          <ConditionalFields control={control} watch={watch} allReadonly={!!defaultValues} />
         </SimpleGrid>
         <Button colorPalette="purple" type="submit">Запустити симуляцію</Button>
       </Stack>

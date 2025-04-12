@@ -13,6 +13,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
 migrate = Migrate(app, db)
 
+# TODO: improve & clean code
 @app.route("/api/simulation", methods=["POST"])
 def post_simulation():
     data = request.get_json()
@@ -57,6 +58,27 @@ def post_simulation():
     db.session.commit()
     return jsonify(result)
 
+@app.route("/api/simulation/view", methods=["POST"])
+def view_simulation():
+    data = request.get_json()
+
+    model = data.get("model", "sir")
+    beta = float(data.get("beta", 0.3))
+    gamma = float(data.get("gamma", 0.1))
+    sigma = float(data.get("sigma", 0.2))
+    delta = float(data.get("delta", 0.1))
+    v_rate = float(data.get("vRate", 0.05))
+    h_rate = float(data.get("hRate", 0.05))
+    mu = float(data.get("mu", 0.02))
+    D = float(data.get("D", 0.01))
+    days = int(data.get("days", 100))
+    n = int(data.get("n", 100))
+    initialS = int(data.get("initialS", 99))
+    initialI = int(data.get("initialI", 1))
+
+    result = run_simulation(model, beta, gamma, sigma, delta, v_rate, h_rate, mu, D, days, n, initialS, initialI, with_stats=False)
+    return jsonify(result)
+
 @app.route("/api/history", methods=["GET"])
 def get_history():
     page = int(request.args.get("page", 1))
@@ -82,6 +104,15 @@ def get_history():
         "page": page,
         "page_size": page_size
     })
+
+@app.route("/api/simulation/<string:sim_id>", methods=["GET"])
+def get_simulation(sim_id):
+    sim = Simulation.query.get(sim_id)
+    
+    if not sim:
+        return jsonify({"error": "Not found"}), 404
+
+    return jsonify(sim.to_dict())
 
 @app.route("/api/simulation/<string:sim_id>", methods=["DELETE"])
 def delete_simulation(sim_id):
