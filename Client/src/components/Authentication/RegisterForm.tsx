@@ -11,6 +11,9 @@ import { useForm } from "react-hook-form";
 import { PasswordInput } from "../ui/password-input";
 import { Field } from "../ui/field";
 import { emailValidation, passwordValidation } from "./authValidationRules";
+import { useApi } from "../../api/ApiProvider";
+import { useNavigate } from "react-router-dom";
+import { AuthFormProps } from "./LoginForm";
 
 interface RegisterFormValues {
   email: string;
@@ -18,10 +21,24 @@ interface RegisterFormValues {
   repeatPassword: string;
 }
 
-const RegisterForm = () => {
+const RegisterForm = ({setUser}: AuthFormProps) => {
+  const { api } = useApi();
+  const navigate = useNavigate();
   const { register, handleSubmit, watch, formState: { errors } } = useForm<RegisterFormValues>({});
-  const onSubmit = handleSubmit((data) => console.log(data))
+  const onSubmit = handleSubmit((data) => singup(data));
   const password = watch("password");
+
+  const singup = async (data: RegisterFormValues) => {
+    const email = data.email;
+    const password = data.password;
+    const res = await api.post("/auth/register", { email, password });
+    const { access, refresh } = res.data;
+    setUser({email: "email"});
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
+    navigate("/");
+    return res.data;
+  };
 
   return (
     <Flex

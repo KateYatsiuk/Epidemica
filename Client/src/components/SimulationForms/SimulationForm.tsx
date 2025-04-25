@@ -78,16 +78,12 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData, defaultValues 
     const filteredData = filterFields(data);
     const body = prepareSimulationData(filteredData);
 
-    try {
-      if (defaultValues) {
-        const response = await api.post('/simulation/view', body);
-        setData(filteredData, { ...response.data });
-      } else {
-        const response = await api.post('/simulation', body);
-        setData(filteredData, { ...response.data });
-      }
-    } catch (error) {
-      console.error("Error getting simulation data:", error);
+    if (defaultValues) {
+      const response = await api.post('/simulation/view', body);
+      setData(filteredData, { ...response.data });
+    } else {
+      const response = await api.post('/simulation', body);
+      setData(filteredData, { ...response.data });
     }
   };
 

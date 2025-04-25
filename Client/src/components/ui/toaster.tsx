@@ -10,7 +10,7 @@ import {
 export const toaster = createToaster({
   pauseOnPageIdle: true,
   placement: "top-end",
-  overlap: true
+  overlap: true,
 })
 
 export const Toaster = () => {
@@ -25,9 +25,9 @@ export const Toaster = () => {
               <Toast.Indicator />
             )}
             <Stack gap="1" flex="1" maxWidth="100%">
-              {toast.title && <Toast.Title>{toast.title}</Toast.Title>}
+              {toast.title && <Toast.Title fontSize="md">{toast.title}</Toast.Title>}
               {toast.description && (
-                <Toast.Description>{toast.description}</Toast.Description>
+                <Toast.Description fontSize="md" color="white">{toast.description}</Toast.Description>
               )}
             </Stack>
             {toast.action && (

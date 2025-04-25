@@ -34,7 +34,7 @@ const HistoryPage = () => {
   useEffect(() => {
     const fetchSimulations = async () => {
       try {
-        const res = await api.get("/history", {
+        const res = await api.get("/simulation/history", {
           params: { page, page_size: defaultPageSize }
         });
         setSimulations(res.data.simulations);
@@ -53,17 +53,13 @@ const HistoryPage = () => {
   };
 
   const handleDelete = async (id: string) => {
-    try {
-      await api.delete(`/simulation/${id}`);
-      setSimulations((prev) => prev.filter((sim) => sim.id !== id));
-      setSelectedIds((prev) => prev.filter((i) => i !== id));
-      toaster.success({
-        title: "Симуляцію видалено",
-        duration: 3000,
-      });
-    } catch {
-      console.log("Delete error");
-    }
+    await api.delete(`/simulation/${id}`);
+    setSimulations((prev) => prev.filter((sim) => sim.id !== id));
+    setSelectedIds((prev) => prev.filter((i) => i !== id));
+    toaster.success({
+      title: "Симуляцію видалено",
+      duration: 3000,
+    });
   };
 
   const handleCompare = () => {

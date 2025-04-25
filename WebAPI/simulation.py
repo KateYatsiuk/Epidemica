@@ -1,89 +1,203 @@
-import numpy as np
-from sir_models import seihr_model, seiqr_model, seir_model, seirv_model, sir_model
-from scipy.integrate import odeint
+from flask import Blueprint, request, jsonify, abort
+from flask_jwt_extended import jwt_required, current_user
+from models import Simulation, db
+from simulation_utils import run_simulation
 
-def simulate_raw(model_func, y0, t, args, compartments):
-    result = odeint(model_func, y0, t, args=args)
-    unpacked = result.T
-    return {
-        "time": t.tolist(),
-        **{comp: unpacked[i].tolist() for i, comp in enumerate(compartments)}
-    }
+simulation_bp = Blueprint("simulation", __name__)
 
-def simulate_stats(model_func, y0, t, args, compartments, beta, gamma, extra_outputs=None):
-    raw = simulate_raw(model_func, y0, t, args, compartments)
-    
-    S = raw.get("S")
-    I = raw.get("I")
-    R = raw.get("R")
-    peak_day = int(t[np.argmax(I)])
-    max_infected = max(I)
 
-    stats = {
-        "max_infected": max_infected,
-        "peak_day": peak_day,
-        "r0": round(beta / gamma),
-        "final_susceptible": S[-1],
-        "final_recovered": R[-1]
-    }
+# TODO: improve & clean code
+@simulation_bp.route("", methods=["POST"])
+@jwt_required()
+def post_simulation():
+    data = request.get_json()
 
-    if extra_outputs:
-        stats.update(extra_outputs(raw))
+    model = data.get("model", "sir")
+    beta = float(data.get("beta", 0.3))
+    gamma = float(data.get("gamma", 0.1))
+    sigma = float(data.get("sigma", 0.2))
+    delta = float(data.get("delta", 0.1))
+    v_rate = float(data.get("vRate", 0.05))
+    h_rate = float(data.get("hRate", 0.05))
+    mu = float(data.get("mu", 0.02))
+    D = float(data.get("D", 0.01))
+    days = int(data.get("days", 100))
+    n = int(data.get("n", 100))
+    initialS = int(data.get("initialS", 99))
+    initialI = int(data.get("initialI", 1))
 
-    return {**raw, **stats}
+    result = run_simulation(
+        model,
+        beta,
+        gamma,
+        sigma,
+        delta,
+        v_rate,
+        h_rate,
+        mu,
+        D,
+        days,
+        n,
+        initialS,
+        initialI,
+    )
 
-def run_simulation(model="sir", beta=0.3, gamma=0.1, sigma=0.2, delta=0.1,
-                   v_rate=0.05, h_rate=0.05, mu=0.02, D=0.01, days=100, n=100,
-                   initialS=99, initialI=1, with_stats=True):
+    simulation = Simulation(
+        model=model,
+        N=n,
+        initialS=initialS,
+        initialI=initialI,
+        beta=beta,
+        gamma=gamma,
+        sigma=sigma if model in ["seir", "seihr", "seiqr", "seirv"] else None,
+        delta=delta if model == "seiqr" else None,
+        v_rate=v_rate if model == "seirv" else None,
+        h_rate=h_rate if model == "seihr" else None,
+        mu=mu if model == "seihr" else None,
+        D=D if model == "sir_diffusion" else None,
+        days=days,
+        max_infected=float(result["max_infected"]),
+        peak_day=int(result["peak_day"]),
+        final_susceptible=float(result["final_susceptible"]),
+        final_recovered=float(result["final_recovered"]),
+        user_id=current_user.id,
+    )
 
-    t = np.linspace(0, days, days)
+    db.session.add(simulation)
+    db.session.commit()
+    return jsonify(result)
 
-    models = {
-        "sir": {
-            "func": sir_model,
-            "y0": [initialS, initialI, 0],
-            "args": (beta, gamma, n),
-            "compartments": ["S", "I", "R"],
-        },
-        "seir": {
-            "func": seir_model,
-            "y0": [initialS, initialI, 0, 0],
-            "args": (beta, sigma, gamma, n),
-            "compartments": ["S", "E", "I", "R"],
-        },
-        "seiqr": {
-            "func": seiqr_model,
-            "y0": [initialS, initialI, 0, 0, 0],
-            "args": (beta, sigma, gamma, delta, n),
-            "compartments": ["S", "E", "I", "Q", "R"],
-        },
-        "seirv": {
-            "func": seirv_model,
-            "y0": [initialS, initialI, 0, 0, 0],
-            "args": (beta, sigma, gamma, v_rate, n),
-            "compartments": ["S", "E", "I", "R", "V"],
-            "extra": lambda d: {"final_vaccinated": d["V"][-1]}
-        },
-        "seihr": {
-            "func": seihr_model,
-            "y0": [initialS, initialI, 0, 0, 0],
-            "args": (beta, sigma, gamma, h_rate, mu, n),
-            "compartments": ["S", "E", "I", "H", "R"]
-            # TODO: Add final_hospitalized 
+
+@simulation_bp.route("/view", methods=["POST"])
+@jwt_required()
+def view_simulation():
+    data = request.get_json()
+
+    model = data.get("model", "sir")
+    beta = float(data.get("beta", 0.3))
+    gamma = float(data.get("gamma", 0.1))
+    sigma = float(data.get("sigma", 0.2))
+    delta = float(data.get("delta", 0.1))
+    v_rate = float(data.get("vRate", 0.05))
+    h_rate = float(data.get("hRate", 0.05))
+    mu = float(data.get("mu", 0.02))
+    D = float(data.get("D", 0.01))
+    days = int(data.get("days", 100))
+    n = int(data.get("n", 100))
+    initialS = int(data.get("initialS", 99))
+    initialI = int(data.get("initialI", 1))
+
+    result = run_simulation(
+        model,
+        beta,
+        gamma,
+        sigma,
+        delta,
+        v_rate,
+        h_rate,
+        mu,
+        D,
+        days,
+        n,
+        initialS,
+        initialI,
+        with_stats=False,
+    )
+    return jsonify(result)
+
+
+@simulation_bp.route("/history", methods=["GET"])
+@jwt_required()
+def get_history():
+    page = int(request.args.get("page", 1))
+    page_size = int(request.args.get("page_size", 10))
+
+    query = Simulation.query.filter_by(user_id=current_user.id).order_by(Simulation.created_at.desc())
+    total = query.count()
+    simulations = query.offset((page - 1) * page_size).limit(page_size).all()
+
+    return jsonify(
+        {
+            "simulations": [
+                {
+                    "id": s.id,
+                    "model": s.model,
+                    "created_at": s.created_at.isoformat(),
+                    "days": s.days,
+                    "max_infected": s.max_infected,
+                    "peak_day": s.peak_day,
+                    "r0": s.r0,
+                }
+                for s in simulations
+            ],
+            "total": total,
+            "page": page,
+            "page_size": page_size,
         }
-    }
+    )
 
-    if model not in models:
-        raise ValueError(f"Unknown model: {model}")
 
-    config = models[model]
-    if with_stats:
-        return simulate_stats(
-            config["func"], config["y0"], t, config["args"],
-            config["compartments"], beta=beta, gamma=gamma, extra_outputs=config.get("extra")
-        )
-    else:
-        return simulate_raw(
-            config["func"], config["y0"], t, config["args"],
-            config["compartments"]
-        )
+@simulation_bp.route("/<string:sim_id>", methods=["GET"])
+@jwt_required()
+def get_simulation(sim_id):
+    sim = Simulation.query.filter_by(id=sim_id, user_id=current_user.id).first()
+
+    if not sim:
+        return jsonify({"error": "Not found"}), 404
+
+    return jsonify(sim.to_dict())
+
+
+@simulation_bp.route("/<string:sim_id>", methods=["DELETE"])
+@jwt_required()
+def delete_simulation(sim_id):
+    simulation = Simulation.query.filter_by(id=sim_id, user_id=current_user.id).first()
+
+    if simulation is None:
+        abort(404, description="Simulation not found")
+
+    db.session.delete(simulation)
+    db.session.commit()
+
+    return jsonify({"message": f"Simulation with ID {sim_id} successfully deleted"})
+
+
+@simulation_bp.route("/compare", methods=["POST"])
+@jwt_required()
+def compare_simulations():
+    try:
+        simulation_ids = request.json.get("simulation_ids", [])
+
+        if not simulation_ids:
+            return jsonify({"error": "No simulation IDs provided"}), 400
+
+        simulations = Simulation.query.filter(
+            Simulation.id.in_(simulation_ids),
+            Simulation.user_id == current_user.id
+        ).all()
+
+        if not simulations:
+            return jsonify({"error": "Simulations not found"}), 404
+
+        response_data = [
+            {
+                "id": s.id,
+                "model": s.model,
+                "created_at": s.created_at.isoformat(),
+                "days": s.days,
+                "max_infected": s.max_infected,
+                "peak_day": s.peak_day,
+                "final_susceptible": s.final_susceptible,
+                "final_recovered": s.final_recovered,
+                "r0": s.r0,
+                # "curve": [
+                #     {"day": day, "infected": infected} for day, infected in enumerate(s.infected_curve)
+                # ]
+            }
+            for s in simulations
+        ]
+
+        return jsonify({"simulations": response_data})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

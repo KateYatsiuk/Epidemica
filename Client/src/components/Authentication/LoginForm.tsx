@@ -11,15 +11,33 @@ import { useForm } from "react-hook-form";
 import { PasswordInput } from "../ui/password-input";
 import { Field } from "../ui/field";
 import { emailValidation, passwordValidation } from "./authValidationRules";
+import { useApi } from "../../api/ApiProvider";
+import { useNavigate } from "react-router-dom";
 
 interface LoginFormValues {
   email: string;
   password: string;
 }
 
-const LoginForm = () => {
+export interface AuthFormProps {
+  setUser: React.Dispatch<React.SetStateAction<{ email: string } | null>>;
+}
+
+const LoginForm = ({setUser}: AuthFormProps) => {
+  const { api } = useApi();
+  const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({});
-  const onSubmit = handleSubmit((data) => console.log(data))
+  const onSubmit = handleSubmit((data) => signin(data));
+
+  const signin = async (data: LoginFormValues) => {
+    const res = await api.post("/auth/login", data);
+    const { access, refresh } = res.data;
+    setUser({email: "email"});
+    localStorage.setItem("access_token", access);
+    localStorage.setItem("refresh_token", refresh);
+    navigate("/");
+    return res.data;
+  };
 
   return (
     <Flex

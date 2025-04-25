@@ -33,40 +33,36 @@ const SimulationPage = () => {
         return;
       }
 
-      try {
-        const res = await api.get(`/simulation/${simId}`);
-        const simulation = res.data;
+      const res = await api.get(`/simulation/${simId}`);
+      const simulation = res.data;
 
-        const formValues: SimulationFormValues = {
-          model: [simulation.model as ModelKind],
-          initialS: simulation.initialS,
-          initialI: simulation.initialI,
-          beta: simulation.beta,
-          gamma: simulation.gamma,
-          n: simulation.N,
-          days: simulation.days,
-          sigma: simulation.sigma,
-          delta: simulation.delta,
-          vRate: simulation.vRate,
-          hRate: simulation.hRate,
-          mu: simulation.mu,
-          D: simulation.D,
-        };
+      const formValues: SimulationFormValues = {
+        model: [simulation.model as ModelKind],
+        initialS: simulation.initialS,
+        initialI: simulation.initialI,
+        beta: simulation.beta,
+        gamma: simulation.gamma,
+        n: simulation.N,
+        days: simulation.days,
+        sigma: simulation.sigma,
+        delta: simulation.delta,
+        vRate: simulation.vRate,
+        hRate: simulation.hRate,
+        mu: simulation.mu,
+        D: simulation.D,
+      };
 
-        const resultParams: SimulationModelResult = {
-          time: [], S: [], I: [], R: [],
-          final_recovered: simulation.final_recovered,
-          final_susceptible: simulation.final_susceptible,
-          max_infected: simulation.max_infected,
-          peak_day: simulation.peak_day,
-          r0: simulation.r0
-        };
+      const resultParams: SimulationModelResult = {
+        time: [], S: [], I: [], R: [],
+        final_recovered: simulation.final_recovered,
+        final_susceptible: simulation.final_susceptible,
+        max_infected: simulation.max_infected,
+        peak_day: simulation.peak_day,
+        r0: simulation.r0
+      };
 
-        setModelParams(formValues);
-        setData(resultParams);
-      } catch (err) {
-        console.error("Не вдалося завантажити симуляцію", err);
-      }
+      setModelParams(formValues);
+      setData(resultParams);
     };
 
     fetchSimById();

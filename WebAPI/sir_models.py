@@ -5,6 +5,7 @@ def sir_model(y, t, beta, gamma, N):
     dRdt = gamma * I
     return [dSdt, dIdt, dRdt]
 
+
 def seir_model(y, t, beta, sigma, gamma, N):
     S, E, I, R = y
     dSdt = -beta * S * I / N
@@ -12,6 +13,7 @@ def seir_model(y, t, beta, sigma, gamma, N):
     dIdt = sigma * E - gamma * I
     dRdt = gamma * I
     return [dSdt, dEdt, dIdt, dRdt]
+
 
 def seiqr_model(y, t, beta, sigma, gamma, delta, N):
     S, E, I, Q, R = y
@@ -22,6 +24,7 @@ def seiqr_model(y, t, beta, sigma, gamma, delta, N):
     dRdt = gamma * (I + Q)
     return [dSdt, dEdt, dIdt, dQdt, dRdt]
 
+
 def seirv_model(y, t, beta, sigma, gamma, v_rate, N):
     S, E, I, R, V = y
     dSdt = -beta * S * I / N - v_rate * S
@@ -30,6 +33,7 @@ def seirv_model(y, t, beta, sigma, gamma, v_rate, N):
     dRdt = gamma * I
     dVdt = v_rate * S
     return [dSdt, dEdt, dIdt, dRdt, dVdt]
+
 
 def seihr_model(y, t, beta, sigma, gamma, h_rate, mu, N):
     S, E, I, H, R = y

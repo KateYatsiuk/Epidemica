@@ -47,8 +47,7 @@ const SimulationComparison = () => {
   useEffect(() => {
     const fetchSimulations = async () => {
       setLoading(true);
-      try {
-        const res = await api.post("/compare", { simulation_ids: simulationIds });
+        const res = await api.post("/simulation/compare", { simulation_ids: simulationIds });
         setSimulations(res.data.simulations);
         // setSimulations([
         //   {
@@ -76,11 +75,7 @@ const SimulationComparison = () => {
         //     ]
         //   },
         // ]);
-      } catch (err) {
-        console.error("Failed to fetch simulation data", err);
-      } finally {
-        setLoading(false);
-      }
+      setLoading(false);
     };
 
     if (simulationIds.length > 0) {
