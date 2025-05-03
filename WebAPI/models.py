@@ -42,6 +42,7 @@ class Simulation(db.Model):
 
     def to_dict(self):
         data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        data["r0"] = self.r0
         data["created_at"] = self.created_at.isoformat() if self.created_at else None
         return data
 
