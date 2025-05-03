@@ -1,6 +1,6 @@
-import { Button, useMediaQuery } from '@chakra-ui/react';
+import { Button, Heading, useMediaQuery } from '@chakra-ui/react';
 import { useRef, useEffect, useState } from 'react';
-import { SimulationFormValues } from '../models/simulation';
+import { ModelKind, SimulationFormValues } from '../models/simulation';
 import { AgentSimulation } from '../models/agentSimulation';
 import { useColorMode } from './ui/color-mode';
 
@@ -11,6 +11,9 @@ interface AgentSimulationBoxProps {
 
 const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const quarantineCanvasRef = useRef<HTMLCanvasElement>(null);
+  const hospitalCanvasRef = useRef<HTMLCanvasElement>(null);
+
   const [currentSim, setCurrentSim] = useState<AgentSimulation | null>(null);
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const { colorMode } = useColorMode();
@@ -47,7 +50,9 @@ const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) 
         modelParams.hRate,
         modelParams.mu,
         modelParams.vRate,
-        colorMode
+        colorMode,
+        quarantineCanvasRef.current,
+        hospitalCanvasRef.current
       );
       setCurrentSim(sim);
       sim.startSimulation();
@@ -112,6 +117,29 @@ const AgentSimulationBox = ({ modelParams, isActive }: AgentSimulationBoxProps) 
           borderRadius: "0.5rem"
         }}
       />
+
+      {modelParams.model[0] === ModelKind.SEIQR &&
+        <>
+          <Heading size="md">Карантин</Heading>
+          <canvas
+            ref={quarantineCanvasRef}
+            width={canvasWidth}
+            height={100}
+            style={{ border: "1px dashed purple", marginLeft: "10px", borderRadius: "0.5rem" }}
+          />
+        </>
+      }
+      {modelParams.model[0] === ModelKind.SEIHR &&
+        <>
+          <Heading size="md">Лікарня</Heading>
+          <canvas
+            ref={hospitalCanvasRef}
+            width={canvasWidth}
+            height={100}
+            style={{ border: "1px dashed brown", marginLeft: "10px", borderRadius: "0.5rem" }}
+          />
+        </>
+      }
 
       <div style={{ marginTop: '10px' }}>
         <Button

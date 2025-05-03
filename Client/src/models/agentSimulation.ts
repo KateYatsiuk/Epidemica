@@ -17,6 +17,8 @@ export class AgentSimulation {
   modelType: ModelKind;
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  quarantineCtx: CanvasRenderingContext2D | null;
+  hospitalCtx: CanvasRenderingContext2D | null;
   animationFrameId: number;
   quarantineArea?: RestrictedArea;
   hospitalArea?: RestrictedArea;
@@ -36,7 +38,9 @@ export class AgentSimulation {
     h_rate?: number,
     mu?: number,
     v_rate?: number,
-    colorMode?: ColorMode
+    colorMode?: ColorMode,
+    quarantineCanvas?: HTMLCanvasElement | null,
+    hospitalCanvas?: HTMLCanvasElement | null
   ) {
     this.agents = [];
     this.beta = beta;
@@ -55,7 +59,18 @@ export class AgentSimulation {
     this.animationFrameId = 0;
     this.colorMode = colorMode ?? "light";
 
-    this.prepareIsolationAreas(modelType);
+    this.quarantineArea = quarantineCanvas
+      ? { x: 0, y: 0, width: quarantineCanvas.width, height: quarantineCanvas.height }
+      : undefined;
+
+    this.hospitalArea = hospitalCanvas
+      ? { x: 0, y: 0, width: hospitalCanvas.width, height: hospitalCanvas.height }
+      : undefined;
+
+    this.quarantineCtx = quarantineCanvas?.getContext('2d') || null;
+    this.hospitalCtx = hospitalCanvas?.getContext('2d') || null;
+
+    this.prepareIsolationAreas(quarantineCanvas, hospitalCanvas);
     this.initializeAgents();
   }
 
@@ -127,8 +142,29 @@ export class AgentSimulation {
 
   render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.drawIsolationAreas();
-    this.agents.forEach(agent => agent.render(this.ctx));
+    this.agents.forEach(agent => {
+      if (
+        agent.state !== AgentsStatesKind.Quarantined &&
+        agent.state !== AgentsStatesKind.Hospitalized
+      ) {
+        agent.render(this.ctx);
+      }
+    });
+
+    if (this.quarantineCtx && this.quarantineArea) {
+      this.quarantineCtx.clearRect(0, 0, this.quarantineArea.width, this.quarantineArea.height);
+      this.agents
+        .filter(agent => agent.state === AgentsStatesKind.Quarantined)
+        .forEach(agent => agent.render(this.quarantineCtx!));
+    }
+
+    if (this.hospitalCtx && this.hospitalArea) {
+      this.hospitalCtx.clearRect(0, 0, this.hospitalArea.width, this.hospitalArea.height);
+      this.agents
+        .filter(agent => agent.state === AgentsStatesKind.Hospitalized)
+        .forEach(agent => agent.render(this.hospitalCtx!));
+    }
+
     this.displayStatistics();
   }
 
@@ -193,72 +229,16 @@ export class AgentSimulation {
     }
   }
 
-  private prepareIsolationAreas(modelType: ModelKind) {
-    if (modelType === ModelKind.SEIQR || modelType === ModelKind.SEIHR) {
-      const canvasWidth = this.canvas.width;
-      const canvasHeight = this.canvas.height;
+  private prepareIsolationAreas(quarantineCanvas: HTMLCanvasElement | null | undefined, hospitalCanvas: HTMLCanvasElement | null | undefined) {
+    this.quarantineArea = quarantineCanvas
+      ? { x: 0, y: 0, width: quarantineCanvas.width, height: quarantineCanvas.height }
+      : undefined;
 
-      if (modelType === ModelKind.SEIQR) {
-        // bottom right
-        this.quarantineArea = {
-          x: canvasWidth * 0.7,
-          y: canvasHeight * 0.7,
-          width: canvasWidth * 0.25,
-          height: canvasHeight * 0.25
-        };
-      }
+    this.hospitalArea = hospitalCanvas
+      ? { x: 0, y: 0, width: hospitalCanvas.width, height: hospitalCanvas.height }
+      : undefined;
 
-      if (modelType === ModelKind.SEIHR) {
-        // bottom left
-        this.hospitalArea = {
-          x: canvasWidth * 0.05,
-          y: canvasHeight * 0.7,
-          width: canvasWidth * 0.25,
-          height: canvasHeight * 0.25
-        };
-      }
-    }
-  }
-
-  private drawIsolationAreas() {
-    if (this.quarantineArea) {
-      this.ctx.fillStyle = "rgba(128, 0, 128, 0.1)";
-      this.ctx.fillRect(
-        this.quarantineArea.x,
-        this.quarantineArea.y,
-        this.quarantineArea.width,
-        this.quarantineArea.height
-      );
-      this.ctx.strokeStyle = "purple";
-      this.ctx.strokeRect(
-        this.quarantineArea.x,
-        this.quarantineArea.y,
-        this.quarantineArea.width,
-        this.quarantineArea.height
-      );
-      this.ctx.fillStyle = "purple";
-      this.ctx.font = "14px Arial";
-      this.ctx.fillText("Quarantine", this.quarantineArea.x + 10, this.quarantineArea.y + 20);
-    }
-
-    if (this.hospitalArea) {
-      this.ctx.fillStyle = "rgba(165, 42, 42, 0.1)";
-      this.ctx.fillRect(
-        this.hospitalArea.x,
-        this.hospitalArea.y,
-        this.hospitalArea.width,
-        this.hospitalArea.height
-      );
-      this.ctx.strokeStyle = "brown";
-      this.ctx.strokeRect(
-        this.hospitalArea.x,
-        this.hospitalArea.y,
-        this.hospitalArea.width,
-        this.hospitalArea.height
-      );
-      this.ctx.fillStyle = "brown";
-      this.ctx.font = "14px Arial";
-      this.ctx.fillText("Hospital", this.hospitalArea.x + 10, this.hospitalArea.y + 20);
-    }
+    this.quarantineCtx = quarantineCanvas?.getContext('2d') || null;
+    this.hospitalCtx = hospitalCanvas?.getContext('2d') || null;
   }
 }
