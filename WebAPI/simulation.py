@@ -112,7 +112,9 @@ def get_history():
     page = int(request.args.get("page", 1))
     page_size = int(request.args.get("page_size", 10))
 
-    query = Simulation.query.filter_by(user_id=current_user.id).order_by(Simulation.created_at.desc())
+    query = Simulation.query.filter_by(user_id=current_user.id).order_by(
+        Simulation.created_at.desc()
+    )
     total = query.count()
     simulations = query.offset((page - 1) * page_size).limit(page_size).all()
 
@@ -124,6 +126,9 @@ def get_history():
                     "model": s.model,
                     "created_at": s.created_at.isoformat(),
                     "days": s.days,
+                    "n": s.N,
+                    "final_susceptible": s.final_susceptible,
+                    "final_recovered": s.final_recovered,
                     "max_infected": s.max_infected,
                     "peak_day": s.peak_day,
                     "r0": s.r0,
@@ -172,8 +177,7 @@ def compare_simulations():
             return jsonify({"error": "No simulation IDs provided"}), 400
 
         simulations = Simulation.query.filter(
-            Simulation.id.in_(simulation_ids),
-            Simulation.user_id == current_user.id
+            Simulation.id.in_(simulation_ids), Simulation.user_id == current_user.id
         ).all()
 
         if not simulations:
@@ -185,14 +189,22 @@ def compare_simulations():
                 "model": s.model,
                 "created_at": s.created_at.isoformat(),
                 "days": s.days,
+                "n": s.N,
                 "max_infected": s.max_infected,
                 "peak_day": s.peak_day,
                 "final_susceptible": s.final_susceptible,
                 "final_recovered": s.final_recovered,
                 "r0": s.r0,
-                # "curve": [
-                #     {"day": day, "infected": infected} for day, infected in enumerate(s.infected_curve)
-                # ]
+                "sigma": s.sigma,
+                "delta": s.delta,
+                "v_rate": s.v_rate,
+                "h_rate": s.h_rate,
+                "mu": s.mu,
+                "D": s.D,
+                "initialS": s.initialS,
+                "initialI": s.initialI,
+                "beta": s.beta,
+                "gamma": s.gamma
             }
             for s in simulations
         ]

@@ -21,7 +21,7 @@ interface NavLinkProps {
 
 const Links = [
   { label: "Симуляція", href: "/" },
-  { label: "Історія", href: "/history" },
+  { label: "Історія симуляцій", href: "/history" },
 ];
 
 const NavLink = (props: NavLinkProps) => {

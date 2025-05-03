@@ -3,7 +3,7 @@ import { LuFileChartColumn, LuTrash2 } from "react-icons/lu";
 import { SimulationHistory } from "../../models/simulation";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDeleteDialog } from "../core/ConfirmDeleteDialog";
-import { hostoryColumns } from "./history-columns";
+import { historyColumns } from "./historyColumns";
 
 interface HistoryTableProps {
   items: SimulationHistory[];
@@ -34,7 +34,7 @@ const HistoryTable = ({
                 <Checkbox.Control />
               </Checkbox.Root>
             </Table.ColumnHeader>
-            {hostoryColumns.map(col => (
+            {historyColumns.map(col => (
               <Table.ColumnHeader key={col.key}>{col.header}</Table.ColumnHeader>
             ))}
             <Table.ColumnHeader></Table.ColumnHeader>
@@ -54,7 +54,7 @@ const HistoryTable = ({
                   <Checkbox.Control />
                 </Checkbox.Root>
               </Table.Cell>
-              {hostoryColumns.map(col => (
+              {historyColumns.map(col => (
                 <Table.Cell key={col.key}>{col.render(sim)}</Table.Cell>
               ))}
               <Table.Cell>

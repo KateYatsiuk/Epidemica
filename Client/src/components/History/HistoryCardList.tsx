@@ -3,7 +3,7 @@ import { LuFileChartColumn, LuTrash2 } from "react-icons/lu";
 import { SimulationHistory } from "../../models/simulation";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDeleteDialog } from "../core/ConfirmDeleteDialog";
-import { hostoryColumns } from "./history-columns";
+import { historyColumns } from "./historyColumns";
 
 interface HistoryCardListProps {
   items: SimulationHistory[];
@@ -66,7 +66,7 @@ const HistoryCardList = ({
             </HStack>
           </HStack>
           <DataList.Root orientation="horizontal" divideY="1px" maxW="md">
-            {hostoryColumns.map((col) => (
+            {historyColumns.map((col) => (
               <DataList.Item key={col.key}>
                 <DataList.ItemLabel>{col.header}</DataList.ItemLabel>
                 <DataList.ItemValue>{col.render(sim)}</DataList.ItemValue>

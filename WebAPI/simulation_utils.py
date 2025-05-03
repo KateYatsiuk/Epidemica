@@ -87,7 +87,6 @@ def run_simulation(
             "y0": [initialS, initialI, 0, 0, 0],
             "args": (beta, sigma, gamma, h_rate, mu, n),
             "compartments": ["S", "E", "I", "H", "R"],
-            # TODO: Add final_hospitalized
         },
     }
 

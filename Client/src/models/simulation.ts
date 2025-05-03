@@ -37,6 +37,7 @@ export const models = createListCollection({
   ],
 })
 
+
 interface LineConfig {
   color: string;
   label: string;
@@ -75,6 +76,9 @@ export interface SimulationHistory {
   model: string;
   created_at: string;
   days: number;
+  n: number;
+  final_susceptible: number;
+  final_recovered: number;
   max_infected: number;
   peak_day: number;
   r0: number;
@@ -85,10 +89,20 @@ export interface SimulationForComparison {
   model: string;
   created_at: string;
   days: number;
+  initialS: number;
+  initialI: number;
+  beta: number;
+  gamma: number;
+  n: number;
   max_infected: number;
   peak_day: number;
   final_susceptible: number;
   final_recovered: number;
   r0: number;
-  curve: { day: number; infected: number }[];
+  sigma?: number;
+  delta?: number;
+  v_rate?: number;
+  h_rate?: number;
+  mu?: number;
+  D?: number;
 };

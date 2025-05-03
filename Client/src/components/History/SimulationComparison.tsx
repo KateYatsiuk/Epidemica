@@ -1,80 +1,47 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Heading,
-  Table,
-  Spinner,
-  VStack,
-  Tag,
-} from "@chakra-ui/react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { Box, Heading, Table, Spinner, VStack, Tag, IconButton, HStack } from "@chakra-ui/react";
 import { useApi } from "../../api/ApiProvider";
 import { SimulationForComparison } from "../../models/simulation";
+import { LuFileChartColumn } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-const colors = ["#3182CE", "#38A169", "#D69E2E"];
+const modelParameters = [
+  { key: "created_at", label: "Дата" },
+  { key: "days", label: "Днів" },
+  { key: "N", label: "Популяція" },
+  { key: "beta", label: "β (швидкість передачі)" },
+  { key: "gamma", label: "γ (швидкість одужання)" },
+  { key: "initialS", label: "Початково сприйнятливі (S)" },
+  { key: "initialI", label: "Початково інфіковані (I)" },
+  { key: "sigma", label: "σ (інкубаційний період)" },
+  { key: "delta", label: "δ (смертність/перехід)" },
+  { key: "v_rate", label: "Рівень вакцинації" },
+  { key: "h_rate", label: "Шпиталізація" },
+  { key: "mu", label: "μ (коеф. дифузії)" },
+  { key: "max_infected", label: "Пік інфікованих" },
+  { key: "peak_day", label: "День піку" },
+  { key: "final_susceptible", label: "Кінцеві S" },
+  { key: "final_recovered", label: "Кінцеві R" },
+  { key: "r0", label: "R₀ (базове репродуктивне число)" },
+];
 
 const SimulationComparison = () => {
   const { api } = useApi();
+  const navigate = useNavigate();
   const simulationIds = new URLSearchParams(location.search).get("ids")?.split(",") || [];
   const [simulations, setSimulations] = useState<SimulationForComparison[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const columns = [
-    {
-      key: "model", header: "Модель", render: (sim: SimulationForComparison) => (
-        <Tag.Root colorPalette="purple" size="xl">
-          <Tag.Label>{sim.model.toUpperCase()}</Tag.Label>
-        </Tag.Root>
-      ),
-    },
-    {
-      key: "created_at", header: "Дата", render: (sim: SimulationForComparison) =>
-        `${new Date(sim.created_at).toLocaleDateString("uk-UA")}
-          ${new Date(sim.created_at).toLocaleTimeString("uk-UA", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })}`
-    },
-    { key: "days", header: "Днів", render: (sim: SimulationForComparison) => sim.days },
-    { key: "max_infected", header: "Пік інфікованих", render: (sim: SimulationForComparison) => sim.max_infected.toFixed(2) },
-    { key: "peak_day", header: "День піку", render: (sim: SimulationForComparison) => sim.peak_day },
-    { key: "final_susceptible", header: "Кінцеві S", render: (sim: SimulationForComparison) => sim.final_susceptible },
-    { key: "final_recovered", header: "Кінцеві R", render: (sim: SimulationForComparison) => sim.final_recovered },
-    { key: "r0", header: "Базове репродуктивне число R0", render: (sim: SimulationForComparison) => sim.r0 },
-  ];
+  const activeParameters = modelParameters.filter(param =>
+    simulations.some(sim => sim[param.key as keyof SimulationForComparison] !== null
+      && sim[param.key as keyof SimulationForComparison] !== undefined)
+  );
 
   useEffect(() => {
     const fetchSimulations = async () => {
       setLoading(true);
-        const res = await api.post("/simulation/compare", { simulation_ids: simulationIds });
-        setSimulations(res.data.simulations);
-        // setSimulations([
-        //   {
-        //     "id": "1",
-        //     "model": "sir",
-        //     "final_recovered": 93.93180682402061,
-        //     "final_susceptible": 5.913073009531963,
-        //     "max_infected": 30.362111721754705,
-        //     "peak_day": 26,
-        //     "curve": [
-        //       { "day": 0, "infected": 1 },
-        //       { "day": 1, "infected": 2.4 },
-        //     ]
-        //   },
-        //   {
-        //     "id": "2",
-        //     "model": "seir",
-        //     "final_recovered": 90.63428778590107,
-        //     "final_susceptible": 6.527938695617963,
-        //     "max_infected": 19.851888277078146,
-        //     "peak_day": 55,
-        //     "curve": [
-        //       { "day": 0, "infected": 1 },
-        //       { "day": 1, "infected": 2 },
-        //     ]
-        //   },
-        // ]);
+      const res = await api.post("/simulation/compare", { simulation_ids: simulationIds });
+      const sims = res.data.simulations;
+      setSimulations(sims);
       setLoading(false);
     };
 
@@ -91,49 +58,46 @@ const SimulationComparison = () => {
     <VStack align="stretch">
       <Heading size="3xl" mb={6}>SIR Симуляція</Heading>
 
-      <Box w="full" overflowX="auto"  borderWidth="1px" borderRadius="lg">
+      <Box w="full" overflowX="auto" borderWidth="1px" borderRadius="lg">
         <Table.Root variant="line" fontSize="md">
           <Table.Header>
             <Table.Row>
-              {columns.map(col => (
-                <Table.ColumnHeader key={col.key}>{col.header}</Table.ColumnHeader>
+              <Table.ColumnHeader>Параметр</Table.ColumnHeader>
+              {simulations.map(sim => (
+                <Table.ColumnHeader key={sim.id}>
+                  <HStack gap={2}>
+                    <Tag.Root colorPalette="purple" size="xl" >
+                      <Tag.Label>{sim.model.toUpperCase()} </Tag.Label>
+                    </Tag.Root>
+                    <IconButton
+                      colorPalette="purple"
+                      aria-label="Переглянути"
+                      variant="ghost"
+                      onClick={() => navigate(`/?id=${sim.id}`)}
+                    >
+                      <LuFileChartColumn />
+                    </IconButton>
+                  </HStack>
+                </Table.ColumnHeader>
               ))}
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {simulations.map((sim) => (
-              <Table.Row key={sim.id}>
-                {columns.map(col => (
-                  <Table.Cell key={col.key}>{col.render(sim)}</Table.Cell>
-                ))}
+            {activeParameters.map(param => (
+              <Table.Row key={param.key}>
+                <Table.Cell fontWeight="bold">{param.label}</Table.Cell>
+                {simulations.map(sim => {
+                  const value = sim[param.key as keyof SimulationForComparison];
+                  const formatted = param.key === "created_at"
+                    ? new Date(value as string).toLocaleString("uk-UA", { hour12: false })
+                    : value ?? "–";
+
+                  return <Table.Cell key={sim.id}>{formatted}</Table.Cell>;
+                })}
               </Table.Row>
             ))}
           </Table.Body>
         </Table.Root>
-      </Box>
-
-      {/* TODO: FINISH */}
-      <Box borderWidth="1px" borderRadius="lg" mt={2}>
-        <Heading size="2xl" mb={4}>Динаміка інфікованих</Heading>
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart>
-            <XAxis dataKey="day" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            {simulations.map((sim, idx) => (
-              <Line
-                key={sim.id}
-                data={sim.curve}
-                type="monotone"
-                dataKey="infected"
-                name={sim.model}
-                stroke={colors[idx % colors.length]}
-                strokeWidth={2}
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
       </Box>
     </VStack>
   );
