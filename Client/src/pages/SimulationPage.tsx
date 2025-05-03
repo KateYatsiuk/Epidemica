@@ -49,7 +49,6 @@ const SimulationPage = () => {
         vRate: simulation.vRate,
         hRate: simulation.hRate,
         mu: simulation.mu,
-        D: simulation.D,
       };
 
       const resultParams: SimulationModelResult = {

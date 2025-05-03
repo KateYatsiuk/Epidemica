@@ -33,10 +33,6 @@ const ModelSpecificFields: React.FC<ModelSpecificFieldsProps> = ({ control, watc
           <InputField name="mu" label="Одужання з лікарні (mu)" control={control} type="number" step={STEP} required readonly={allReadonly} />
         </>
       )}
-
-      {/* {selectedModel === ModelKind.SIR_DIFFUSION && (
-        <InputField name="D" label="Дифузія (D)" control={control} type="number" step={STEP} required readonly={allReadonly} />
-      )} */}
     </>
   );
 };

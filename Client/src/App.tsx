@@ -16,10 +16,7 @@ function App() {
 
   const fetchUser = async () => {
     const token = localStorage.getItem("access_token");
-    if (!token) {
-      console.log("!token");
-      return;
-    }
+    if (!token) return;
 
     try {
       const res = await api.get("/auth/whoami", {

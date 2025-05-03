@@ -20,7 +20,6 @@ def post_simulation():
     v_rate = float(data.get("vRate", 0.05))
     h_rate = float(data.get("hRate", 0.05))
     mu = float(data.get("mu", 0.02))
-    D = float(data.get("D", 0.01))
     days = int(data.get("days", 100))
     n = int(data.get("n", 100))
     initialS = int(data.get("initialS", 99))
@@ -35,7 +34,6 @@ def post_simulation():
         v_rate,
         h_rate,
         mu,
-        D,
         days,
         n,
         initialS,
@@ -54,7 +52,6 @@ def post_simulation():
         v_rate=v_rate if model == "seirv" else None,
         h_rate=h_rate if model == "seihr" else None,
         mu=mu if model == "seihr" else None,
-        D=D if model == "sir_diffusion" else None,
         days=days,
         max_infected=float(result["max_infected"]),
         peak_day=int(result["peak_day"]),
@@ -81,7 +78,6 @@ def view_simulation():
     v_rate = float(data.get("vRate", 0.05))
     h_rate = float(data.get("hRate", 0.05))
     mu = float(data.get("mu", 0.02))
-    D = float(data.get("D", 0.01))
     days = int(data.get("days", 100))
     n = int(data.get("n", 100))
     initialS = int(data.get("initialS", 99))
@@ -96,7 +92,6 @@ def view_simulation():
         v_rate,
         h_rate,
         mu,
-        D,
         days,
         n,
         initialS,
@@ -200,7 +195,6 @@ def compare_simulations():
                 "v_rate": s.v_rate,
                 "h_rate": s.h_rate,
                 "mu": s.mu,
-                "D": s.D,
                 "initialS": s.initialS,
                 "initialI": s.initialI,
                 "beta": s.beta,

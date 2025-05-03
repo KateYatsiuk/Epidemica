@@ -20,13 +20,11 @@ class Simulation(db.Model):
     initialI = db.Column(db.Integer, nullable=False, default=1)
     beta = db.Column(db.Float, nullable=False)
     gamma = db.Column(db.Float, nullable=False)
-    sigma = db.Column(db.Float)  # Для SEIR, SEIHR, SEIQR, SEIRV
-    delta = db.Column(db.Float)  # Для SEIHR, SEIQR
-    v_rate = db.Column(db.Float)  # Для SEIRV
-    h_rate = db.Column(db.Float)  # Для SEIHR
-    # TODO: delete diffusion
-    mu = db.Column(db.Float)  # Для SIR-diffusion
-    D = db.Column(db.Float)  # Для SIR-diffusion
+    sigma = db.Column(db.Float)  # SEIR, SEIHR, SEIQR, SEIRV
+    delta = db.Column(db.Float)  # SEIQR
+    v_rate = db.Column(db.Float)  # SEIRV
+    h_rate = db.Column(db.Float)  # SEIHR
+    mu = db.Column(db.Float)  # SEIHR
     days = db.Column(db.Integer, nullable=False)
 
     max_infected = db.Column(db.Float, nullable=False)

@@ -35,7 +35,6 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData, defaultValues 
       vRate: 0.05,
       hRate: 0.05,
       mu: 0.02,
-      D: 0.01,
       days: 100,
       n: 100,
       initialS: 99,

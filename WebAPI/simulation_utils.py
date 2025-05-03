@@ -46,7 +46,6 @@ def run_simulation(
     v_rate=0.05,
     h_rate=0.05,
     mu=0.02,
-    D=0.01,
     days=100,
     n=100,
     initialS=99,

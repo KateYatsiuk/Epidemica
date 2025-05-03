@@ -14,7 +14,6 @@ export interface SimulationFormValues {
   vRate?: number;
   hRate?: number;
   mu?: number;
-  D?: number;
 }
 
 export enum ModelKind {
@@ -23,7 +22,6 @@ export enum ModelKind {
   SEIQR = "seiqr",
   SEIRV = "seirv",
   SEIHR = "seihr",
-  // SIR_DIFFUSION = "sir_diffusion",
 }
 
 export const models = createListCollection({
@@ -33,7 +31,6 @@ export const models = createListCollection({
     { label: "SEIQR", value: ModelKind.SEIQR },
     { label: "SEIRV", value: ModelKind.SEIRV },
     { label: "SEIHR", value: ModelKind.SEIHR },
-    // { label: "SIR (з дифузією)", value: ModelKind.SIR_DIFFUSION },
   ],
 })
 
@@ -104,5 +101,4 @@ export interface SimulationForComparison {
   v_rate?: number;
   h_rate?: number;
   mu?: number;
-  D?: number;
 };

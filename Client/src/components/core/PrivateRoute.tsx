@@ -15,7 +15,6 @@ export function PrivateRoute() {
   const fetchUser = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) {
-      console.log("!token");
       setLoading(false);
       setUser(null);
       return;
