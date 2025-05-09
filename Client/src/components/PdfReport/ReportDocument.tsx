@@ -5,10 +5,7 @@ import { reportDocumentStyles } from './ReportDocument.styles';
 
 interface ReportDocumentProps {
   chartImage: string | null;
-  simulationData: SimulationModelResult & {
-    beta?: number;
-    gamma?: number;
-  };
+  simulationData: SimulationModelResult;
   modelParams: SimulationFormValues;
 }
 const ReportDocument = ({ chartImage, simulationData, modelParams }: ReportDocumentProps) => {
@@ -32,11 +29,11 @@ const ReportDocument = ({ chartImage, simulationData, modelParams }: ReportDocum
   ];
 
   const statsList = [
-    { label: "Базове репродуктивне число (R₀)", value: simulationData.beta && simulationData.gamma ? (simulationData.beta / simulationData.gamma).toFixed(2) : "N/A" },
+    { label: "Базове репродуктивне число (R₀)", value: simulationData.r0.toFixed(2)},
     { label: "День піку інфікованих", value: simulationData.peak_day },
-    { label: "Максимальна кількість інфікованих", value: simulationData.max_infected },
-    { label: "Фінальна кількість сприйнятливих", value: simulationData.final_susceptible },
-    { label: "Фінальна кількість одужалих", value: simulationData.final_recovered },
+    { label: "Максимальна кількість інфікованих", value: simulationData.max_infected.toFixed(0) },
+    { label: "Фінальна кількість сприйнятливих", value: simulationData.final_susceptible.toFixed(0) },
+    { label: "Фінальна кількість одужалих", value: simulationData.final_recovered.toFixed(0) },
   ];
 
   return (
@@ -98,11 +95,9 @@ const ReportDocument = ({ chartImage, simulationData, modelParams }: ReportDocum
         <View style={reportDocumentStyles.section}>
           <Text style={reportDocumentStyles.subheader}>Підсумок</Text>
           <Text style={reportDocumentStyles.text}>• Модель демонструє {simulationData.peak_day > modelParams?.days / 2 ? "пізній" : "ранній"} пік інфекції на {simulationData.peak_day}-й день.</Text>
-          <Text style={reportDocumentStyles.text}>• Максимальна кількість одночасно інфікованих становить {simulationData.max_infected} осіб ({(simulationData.max_infected / modelParams?.n * 100).toFixed(1)}% популяції).</Text>
-          <Text style={reportDocumentStyles.text}>• На кінець періоду відновилося {simulationData.final_recovered} осіб ({(simulationData.final_recovered / modelParams?.n * 100).toFixed(1)}% популяції).</Text>
-          {simulationData.beta && simulationData.gamma &&
-            <Text style={reportDocumentStyles.text}>• Базове репродуктивне число R₀ = {(simulationData.beta / simulationData.gamma).toFixed(2)}, що {(simulationData.beta / simulationData.gamma) > 1 ? "вказує на епідемічне поширення" : "є недостатнім для епідемії"}.</Text>
-          }
+          <Text style={reportDocumentStyles.text}>• Максимальна кількість одночасно інфікованих становить {simulationData.max_infected.toFixed(0)} осіб ({(simulationData.max_infected / modelParams?.n * 100).toFixed(0)}% популяції).</Text>
+          <Text style={reportDocumentStyles.text}>• На кінець періоду відновилося {simulationData.final_recovered.toFixed(0)} осіб ({(simulationData.final_recovered / modelParams?.n * 100).toFixed(0)}% популяції).</Text>
+          <Text style={reportDocumentStyles.text}>• Базове репродуктивне число R₀ = {simulationData.r0.toFixed(2)}, що {simulationData.r0 > 1 ? "вказує на епідемічне поширення" : "є недостатнім для епідемії"}.</Text>
         </View>
 
         <Text style={reportDocumentStyles.footer}>© {new Date().getFullYear()} - Epidemica</Text>
