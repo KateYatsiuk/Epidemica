@@ -1,7 +1,7 @@
 import React from "react";
 import InputField from "../core/InputField";
 import { Control, UseFormWatch } from "react-hook-form";
-import { ModelKind } from "../../models/simulation";
+import { getLabelByKey, ModelKind } from "../../models/simulation";
 
 interface ModelSpecificFieldsProps {
   control: Control<any, any>;
@@ -16,21 +16,21 @@ const ModelSpecificFields: React.FC<ModelSpecificFieldsProps> = ({ control, watc
   return (
     <>
       {[ModelKind.SEIR, ModelKind.SEIHR, ModelKind.SEIQR, ModelKind.SEIRV].includes(selectedModel) && (
-        <InputField name="sigma" label="Інкубаційний період (sigma)" control={control} type="number" step={STEP} required readonly={allReadonly} />
+        <InputField name="sigma" label={getLabelByKey("sigma")} control={control} type="number" step={STEP} required readonly={allReadonly} />
       )}
 
       {selectedModel === ModelKind.SEIQR && (
-        <InputField name="delta" label="Швидкість карантину (delta)" control={control} type="number" step={STEP} required readonly={allReadonly} />
+        <InputField name="delta" label={getLabelByKey("delta")} control={control} type="number" step={STEP} required readonly={allReadonly} />
       )}
 
       {selectedModel === ModelKind.SEIRV && (
-        <InputField name="vRate" label="Вакцинація (vRate)" control={control} type="number" step={STEP} required readonly={allReadonly} />
+        <InputField name="vRate" label={getLabelByKey("v_rate")} control={control} type="number" step={STEP} required readonly={allReadonly} />
       )}
 
       {selectedModel === ModelKind.SEIHR && (
         <>
-          <InputField name="hRate" label="Госпіталізація (hRate)" control={control} type="number" step={STEP} required readonly={allReadonly} />
-          <InputField name="mu" label="Одужання з лікарні (mu)" control={control} type="number" step={STEP} required readonly={allReadonly} />
+          <InputField name="hRate" label={getLabelByKey("h_rate")} control={control} type="number" step={STEP} required readonly={allReadonly} />
+          <InputField name="mu" label={getLabelByKey("mu")} control={control} type="number" step={STEP} required readonly={allReadonly} />
         </>
       )}
     </>

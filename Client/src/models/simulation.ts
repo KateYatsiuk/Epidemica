@@ -102,3 +102,28 @@ export interface SimulationForComparison {
   h_rate?: number;
   mu?: number;
 };
+
+export const modelParameters = [
+  { key: "created_at", label: "Дата" },
+  { key: "days", label: "Кількість днів" },
+  { key: "N", label: "Розмір популяції" },
+  { key: "beta", label: "Коефіцієнт зараження (β)" },
+  { key: "gamma", label: "Коефіцієнт одужання (γ)" },
+  { key: "initialS", label: "Початково сприйнятливих (S)" },
+  { key: "initialI", label: "Початково інфікованих (I)" },
+  { key: "sigma", label: "Коефіцієнт інкубації (σ)" },
+  { key: "delta", label: "Коефіцієнт карантину (δ)" },
+  { key: "v_rate", label: "Коефіцієнт вакцинації" },
+  { key: "h_rate", label: "Коефіцієнт госпіталізації" },
+  { key: "mu", label: "Коефіцієнт одужання з лікарні (μ)" },
+  { key: "max_infected", label: "Пік інфікованих" },
+  { key: "peak_day", label: "День піку" },
+  { key: "final_susceptible", label: "Кінцевих S" },
+  { key: "final_recovered", label: "Кінцевих R" },
+  { key: "r0", label: "Базове репродуктивне число (R₀)" },
+];
+
+export const getLabelByKey = (key: string) => {
+  const param = modelParameters.find((param) => param.key === key);
+  return param ? param.label : key;
+};

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm, Controller, useWatch } from "react-hook-form";
-import { modelFieldMap, ModelKind, models, SimulationFormValues } from "../../models/simulation";
+import { getLabelByKey, modelFieldMap, ModelKind, models, SimulationFormValues } from "../../models/simulation";
 import {
   Button,
   Flex,
@@ -121,12 +121,12 @@ const SimulationForm: React.FC<SimulationFormProps> = ({ setData, defaultValues 
       </Flex>
       <Stack gap={10}>
         <SimpleGrid columns={2} gap={5}>
-          <InputField name="beta" label="Швидкість зараження (beta)" control={control} type="number" step={0.01} required readonly={!!defaultValues} />
-          <InputField name="gamma" label="Швидкість одужання (gamma)" control={control} type="number" step={0.01} required readonly={!!defaultValues} />
-          <InputField name="days" label="Кількість днів" control={control} type="number" required readonly={!!defaultValues} />
-          <InputField name="n" label="Кількість людей" control={control} type="number" helpText="Кількість людей рівна S+I" required readonly />
-          <InputField name="initialS" label="Початково сприйнятливі (S)" control={control} type="number" required readonly={!!defaultValues} />
-          <InputField name="initialI" label="Початково інфіковані (I)" control={control} type="number" required readonly={!!defaultValues} />
+          <InputField name="beta" label={getLabelByKey("beta")} control={control} type="number" step={0.01} required readonly={!!defaultValues} />
+          <InputField name="gamma" label={getLabelByKey("gamma")} control={control} type="number" step={0.01} required readonly={!!defaultValues} />
+          <InputField name="days" label={getLabelByKey("days")} control={control} type="number" required readonly={!!defaultValues} />
+          <InputField name="n" label={getLabelByKey("N")} control={control} type="number" helpText="Кількість рівна S+I" required readonly />
+          <InputField name="initialS" label={getLabelByKey("initialS")} control={control} type="number" required readonly={!!defaultValues} />
+          <InputField name="initialI" label={getLabelByKey("initialI")} control={control} type="number" required readonly={!!defaultValues} />
 
           <ConditionalFields control={control} watch={watch} allReadonly={!!defaultValues} />
         </SimpleGrid>

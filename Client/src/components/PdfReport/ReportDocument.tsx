@@ -1,5 +1,5 @@
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
-import { SimulationFormValues } from '../../models/simulation';
+import { getLabelByKey, SimulationFormValues } from '../../models/simulation';
 import { SimulationModelResult } from '../SimulationChart';
 import { reportDocumentStyles } from './ReportDocument.styles';
 
@@ -20,20 +20,20 @@ const ReportDocument = ({ chartImage, simulationData, modelParams }: ReportDocum
 
   const modelParamsList = [
     { label: "Модель", value: modelParams?.model[0].toUpperCase() },
-    { label: "Коефіцієнт інфікування (β)", value: modelParams?.beta },
-    { label: "Коефіцієнт відновлення (γ)", value: modelParams?.gamma },
-    { label: "Кількість днів", value: modelParams?.days },
-    { label: "Загальна популяція", value: modelParams?.n },
-    { label: "Початкова кількість сприйнятливих", value: modelParams?.initialS },
-    { label: "Початкова кількість інфікованих", value: modelParams?.initialI },
+    { label: getLabelByKey("beta"), value: modelParams?.beta },
+    { label: getLabelByKey("gamma"), value: modelParams?.gamma },
+    { label: getLabelByKey("days"), value: modelParams?.days },
+    { label: getLabelByKey("N"), value: modelParams?.n },
+    { label: getLabelByKey("initialS"), value: modelParams?.initialS },
+    { label: getLabelByKey("initialI"), value: modelParams?.initialI },
   ];
 
   const statsList = [
-    { label: "Базове репродуктивне число (R₀)", value: simulationData.r0.toFixed(2)},
-    { label: "День піку інфікованих", value: simulationData.peak_day },
-    { label: "Максимальна кількість інфікованих", value: simulationData.max_infected.toFixed(0) },
-    { label: "Фінальна кількість сприйнятливих", value: simulationData.final_susceptible.toFixed(0) },
-    { label: "Фінальна кількість одужалих", value: simulationData.final_recovered.toFixed(0) },
+    { label: getLabelByKey("r0"), value: simulationData.r0.toFixed(2)},
+    { label: getLabelByKey("peak_day"), value: simulationData.peak_day },
+    { label: getLabelByKey("max_infected"), value: simulationData.max_infected.toFixed(2) },
+    { label: getLabelByKey("final_susceptible"), value: simulationData.final_susceptible.toFixed(2) },
+    { label: getLabelByKey("final_recovered"), value: simulationData.final_recovered.toFixed(2) },
   ];
 
   return (
@@ -95,8 +95,8 @@ const ReportDocument = ({ chartImage, simulationData, modelParams }: ReportDocum
         <View style={reportDocumentStyles.section}>
           <Text style={reportDocumentStyles.subheader}>Підсумок</Text>
           <Text style={reportDocumentStyles.text}>• Модель демонструє {simulationData.peak_day > modelParams?.days / 2 ? "пізній" : "ранній"} пік інфекції на {simulationData.peak_day}-й день.</Text>
-          <Text style={reportDocumentStyles.text}>• Максимальна кількість одночасно інфікованих становить {simulationData.max_infected.toFixed(0)} осіб ({(simulationData.max_infected / modelParams?.n * 100).toFixed(0)}% популяції).</Text>
-          <Text style={reportDocumentStyles.text}>• На кінець періоду відновилося {simulationData.final_recovered.toFixed(0)} осіб ({(simulationData.final_recovered / modelParams?.n * 100).toFixed(0)}% популяції).</Text>
+          <Text style={reportDocumentStyles.text}>• Максимальна кількість одночасно інфікованих становить {simulationData.max_infected.toFixed(2)} осіб ({(simulationData.max_infected / modelParams?.n * 100).toFixed(2)}% популяції).</Text>
+          <Text style={reportDocumentStyles.text}>• На кінець періоду відновилося {simulationData.final_recovered.toFixed(2)} осіб ({(simulationData.final_recovered / modelParams?.n * 100).toFixed(2)}% популяції).</Text>
           <Text style={reportDocumentStyles.text}>• Базове репродуктивне число R₀ = {simulationData.r0.toFixed(2)}, що {simulationData.r0 > 1 ? "вказує на епідемічне поширення" : "є недостатнім для епідемії"}.</Text>
         </View>
 

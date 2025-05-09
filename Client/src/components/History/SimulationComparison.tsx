@@ -1,29 +1,9 @@
 import { useEffect, useState } from "react";
 import { Box, Heading, Table, Spinner, VStack, Tag, IconButton, HStack } from "@chakra-ui/react";
 import { useApi } from "../../api/ApiProvider";
-import { SimulationForComparison } from "../../models/simulation";
+import { modelParameters, SimulationForComparison } from "../../models/simulation";
 import { LuFileChartColumn } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
-
-const modelParameters = [
-  { key: "created_at", label: "Дата" },
-  { key: "days", label: "Днів" },
-  { key: "N", label: "Популяція" },
-  { key: "beta", label: "β (швидкість передачі)" },
-  { key: "gamma", label: "γ (швидкість одужання)" },
-  { key: "initialS", label: "Початково сприйнятливі (S)" },
-  { key: "initialI", label: "Початково інфіковані (I)" },
-  { key: "sigma", label: "σ (інкубаційний період)" },
-  { key: "delta", label: "δ (смертність/перехід)" },
-  { key: "v_rate", label: "Рівень вакцинації" },
-  { key: "h_rate", label: "Шпиталізація" },
-  { key: "mu", label: "μ (коеф. дифузії)" },
-  { key: "max_infected", label: "Пік інфікованих" },
-  { key: "peak_day", label: "День піку" },
-  { key: "final_susceptible", label: "Кінцеві S" },
-  { key: "final_recovered", label: "Кінцеві R" },
-  { key: "r0", label: "R₀ (базове репродуктивне число)" },
-];
 
 const SimulationComparison = () => {
   const { api } = useApi();
