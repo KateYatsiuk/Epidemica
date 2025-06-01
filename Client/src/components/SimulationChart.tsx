@@ -15,9 +15,12 @@ export interface SimulationModelResult {
   max_infected: number;
   peak_day: number;
   r0: number;
+  hit: number;
 }
 
-function SimulationChart({ time, S, I, R, E, Q, H, V }: Partial<SimulationModelResult>) {
+type SimulationChartProps = Partial<SimulationModelResult> & { n: number };
+
+function SimulationChart({ time, S, I, R, E, Q, H, V, n }: SimulationChartProps) {
   const chartData = time?.map((_, i) => ({
     day: i,
     S: S?.[i].toFixed(2),
@@ -33,18 +36,18 @@ function SimulationChart({ time, S, I, R, E, Q, H, V }: Partial<SimulationModelR
     <ResponsiveContainer width="100%" height={400}>
       <LineChart data={chartData}>
         <XAxis dataKey="day" />
-        <YAxis />
+        <YAxis domain={[0, n]} />
         <Tooltip />
         <Legend />
         {Object.keys(dataKeyColors).map((key) => {
-        const { color } = dataKeyColors[key];
-        const condition = eval(key);
-        return (
-          condition && (
-            <Line key={key} type="monotone" dataKey={key} stroke={color} />
-          )
-        );
-      })}
+          const { color } = dataKeyColors[key];
+          const condition = eval(key);
+          return (
+            condition && (
+              <Line key={key} type="monotone" dataKey={key} stroke={color} />
+            )
+          );
+        })}
       </LineChart>
     </ResponsiveContainer>
   );

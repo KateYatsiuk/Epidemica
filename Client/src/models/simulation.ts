@@ -79,6 +79,7 @@ export interface SimulationHistory {
   max_infected: number;
   peak_day: number;
   r0: number;
+  hit: number;
 };
 
 export interface SimulationForComparison {
@@ -96,6 +97,7 @@ export interface SimulationForComparison {
   final_susceptible: number;
   final_recovered: number;
   r0: number;
+  hit: number;
   sigma?: number;
   delta?: number;
   v_rate?: number;
@@ -110,7 +112,7 @@ export const modelParameters = [
   { key: "beta", label: "Коефіцієнт зараження (β)" },
   { key: "gamma", label: "Коефіцієнт одужання (γ)" },
   { key: "initialS", label: "Початково сприйнятливих (S)" },
-  { key: "initialI", label: "Початково інфікованих (I)" },
+  { key: "initialI", label: "Початково інфікованих (E/I)" },
   { key: "sigma", label: "Коефіцієнт інкубації (σ)" },
   { key: "delta", label: "Коефіцієнт карантину (δ)" },
   { key: "v_rate", label: "Коефіцієнт вакцинації" },
@@ -121,6 +123,7 @@ export const modelParameters = [
   { key: "final_susceptible", label: "Кінцевих S" },
   { key: "final_recovered", label: "Кінцевих R" },
   { key: "r0", label: "Базове репродуктивне число (R₀)" },
+  { key: "hit", label: "Поріг колективного імунітету (HIT)" },
 ];
 
 export const getLabelByKey = (key: string) => {

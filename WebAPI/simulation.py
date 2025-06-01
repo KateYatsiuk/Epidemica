@@ -127,6 +127,7 @@ def get_history():
                     "max_infected": round(s.max_infected),
                     "peak_day": s.peak_day,
                     "r0": s.r0,
+                    "hit": s.hit,
                 }
                 for s in simulations
             ],
@@ -190,6 +191,7 @@ def compare_simulations():
                 "final_susceptible": round(s.final_susceptible),
                 "final_recovered": round(s.final_recovered),
                 "r0": s.r0,
+                "hit": s.hit,
                 "sigma": s.sigma,
                 "delta": s.delta,
                 "v_rate": s.v_rate,

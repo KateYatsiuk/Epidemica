@@ -57,7 +57,8 @@ const SimulationPage = () => {
         final_susceptible: simulation.final_susceptible,
         max_infected: simulation.max_infected,
         peak_day: simulation.peak_day,
-        r0: simulation.r0
+        r0: simulation.r0,
+        hit: simulation.hit,
       };
 
       setModelParams(formValues);
@@ -134,7 +135,7 @@ const SimulationPage = () => {
               </div>
               <Tabs.Content value={TabsValues.Chart}>
                 <FullScreenDialog title="Графік" badgeInfo={`${modelParams?.model[0].toUpperCase()} модель`}>
-                  <SimulationChart {...data} />
+                  <SimulationChart {...data} n={modelParams?.n || 0} />
                   <SimpleGrid columns={{ base: 3, smDown: 1 }} gap={5}>
                     <Box gridColumn={{ base: "span 1", sm: "span 2" }}>
                       <SimulationStats data={data} />
@@ -144,7 +145,7 @@ const SimulationPage = () => {
                 </FullScreenDialog>
 
                 <div ref={simulationChartRef}>
-                  <SimulationChart {...data} />
+                  <SimulationChart {...data} n={modelParams?.n || 0} />
                 </div>
                 <SimpleGrid columns={{ base: 3, smDown: 1 }} gap={5}>
                   <Box gridColumn={{ base: "span 1", sm: "span 2" }}>

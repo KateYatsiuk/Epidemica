@@ -36,7 +36,7 @@ const SimulationComparison = () => {
 
   return (
     <VStack align="stretch">
-      <Heading size="3xl" mb={6}>SIR Симуляція</Heading>
+      <Heading size="3xl" mb={6}>Порівняння симуляцій</Heading>
 
       <Box w="full" overflowX="auto" borderWidth="1px" borderRadius="lg">
         <Table.Root variant="line" fontSize="md">

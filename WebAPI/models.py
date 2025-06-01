@@ -38,11 +38,22 @@ class Simulation(db.Model):
 
     @hybrid_property
     def r0(self):
+        if self.model == 'seiqr':
+        # SEIQR: R0 = β/(γ+δ)
+            return round(self.beta / (self.gamma + self.delta), 4)
+        elif self.model == 'seihr':
+        # SEIHR: R0 = β/(γ+η)
+            return round(self.beta / (self.gamma + self.h_rate), 4)
         return round(self.beta / self.gamma, 4)
+    
+    @hybrid_property
+    def hit(self):
+        return round((self.r0 - 1) / self.r0, 4)
 
     def to_dict(self):
         data = {c.name: getattr(self, c.name) for c in self.__table__.columns}
         data["r0"] = self.r0
+        data["hit"] = self.hit
         data["created_at"] = self.created_at.isoformat() if self.created_at else None
         return data
 

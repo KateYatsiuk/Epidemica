@@ -30,6 +30,7 @@ const ReportDocument = ({ chartImage, simulationData, modelParams }: ReportDocum
 
   const statsList = [
     { label: getLabelByKey("r0"), value: simulationData.r0.toFixed(2)},
+    { label: getLabelByKey("hit"), value: simulationData.hit.toFixed(2)},
     { label: getLabelByKey("peak_day"), value: simulationData.peak_day },
     { label: getLabelByKey("max_infected"), value: simulationData.max_infected.toFixed(2) },
     { label: getLabelByKey("final_susceptible"), value: simulationData.final_susceptible.toFixed(2) },
@@ -98,6 +99,7 @@ const ReportDocument = ({ chartImage, simulationData, modelParams }: ReportDocum
           <Text style={reportDocumentStyles.text}>• Максимальна кількість одночасно інфікованих становить {simulationData.max_infected.toFixed(2)} осіб ({(simulationData.max_infected / modelParams?.n * 100).toFixed(2)}% популяції).</Text>
           <Text style={reportDocumentStyles.text}>• На кінець періоду відновилося {simulationData.final_recovered.toFixed(2)} осіб ({(simulationData.final_recovered / modelParams?.n * 100).toFixed(2)}% популяції).</Text>
           <Text style={reportDocumentStyles.text}>• Базове репродуктивне число R₀ = {simulationData.r0.toFixed(2)}, що {simulationData.r0 > 1 ? "вказує на епідемічне поширення" : "є недостатнім для епідемії"}.</Text>
+          <Text style={reportDocumentStyles.text}>• Поріг колективного імунітету HIT = {simulationData.hit.toFixed(2)}.</Text>
         </View>
 
         <Text style={reportDocumentStyles.footer}>© {new Date().getFullYear()} - Epidemica</Text>

@@ -23,10 +23,16 @@ def simulate_stats(
     peak_day = int(t[np.argmax(I)])
     max_infected = max(I)
 
+    if (model_func == seihr_model or model_func == seiqr_model) and args[3] is not None: # SEIQR & SEIHR
+        r0 = beta / (gamma + args[3])
+    else:
+        r0 = beta / gamma
+
     stats = {
         "max_infected": max_infected,
         "peak_day": peak_day,
-        "r0": round(beta / gamma),
+        "r0": round(r0, 4),
+        "hit": round((r0 - 1) / r0, 4),
         "final_susceptible": S[-1],
         "final_recovered": R[-1],
     }

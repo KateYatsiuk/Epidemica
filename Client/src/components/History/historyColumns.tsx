@@ -25,4 +25,5 @@ export const historyColumns = [
   { key: "max_infected", header: getLabelByKey("max_infected"), render: (sim: SimulationHistory) => sim.max_infected.toFixed(2) },
   { key: "peak_day", header: getLabelByKey("peak_day"), render: (sim: SimulationHistory) => sim.peak_day },
   { key: "r0", header: getLabelByKey("r0"), render: (sim: SimulationHistory) => sim.r0.toFixed(2) },
+  { key: "hit", header: getLabelByKey("hit"), render: (sim: SimulationHistory) => sim.hit.toFixed(2) },
 ];

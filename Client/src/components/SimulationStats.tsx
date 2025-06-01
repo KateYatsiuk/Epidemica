@@ -10,10 +10,15 @@ interface SimulationStatsProps {
 
 const SimulationStats = ({ data }: SimulationStatsProps) => {
   const stats = [
-    { 
+    {
       label: getLabelByKey("r0"),
       value: data.r0,
       tooltip: "Середня кількість індивідуумів, яких інфікує один інфікований індивід, якщо всі інші в популяції сприйнятливі."
+    },
+    {
+      label: getLabelByKey("hit"),
+      value: data.hit,
+      tooltip: "Частка імунних осіб, необхідна в популяції, щоб популяція мала колективний імунітет"
     },
     {
       label: getLabelByKey("peak_day"),
