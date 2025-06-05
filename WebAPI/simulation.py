@@ -6,7 +6,6 @@ from simulation_utils import run_simulation
 simulation_bp = Blueprint("simulation", __name__)
 
 
-# TODO: improve & clean code
 @simulation_bp.route("", methods=["POST"])
 @jwt_required()
 def post_simulation():
@@ -51,7 +50,7 @@ def post_simulation():
         delta=delta if model == "seiqr" else None,
         v_rate=v_rate if model == "seirv" else None,
         h_rate=h_rate if model == "seihr" else None,
-        mu=mu if model == "seihr" else None,
+        mu=mu if (model == "seihr" or model == "seiqr") else None,
         days=days,
         max_infected=float(result["max_infected"]),
         peak_day=int(result["peak_day"]),

@@ -132,9 +132,9 @@ export class Agent {
     }
 
     // Quarantined agents can recover
-    if (this.state === AgentsStatesKind.Quarantined) {
+    if (mu && this.state === AgentsStatesKind.Quarantined) {
       this.recoveryTime--;
-      if (this.recoveryTime <= 0 && Math.random() < gamma) {
+      if (this.recoveryTime <= 0 && Math.random() < mu) {
         this.recover();
       }
     }

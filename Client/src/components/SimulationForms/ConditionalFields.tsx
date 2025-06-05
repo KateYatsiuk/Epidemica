@@ -20,7 +20,10 @@ const ModelSpecificFields: React.FC<ModelSpecificFieldsProps> = ({ control, watc
       )}
 
       {selectedModel === ModelKind.SEIQR && (
-        <InputField name="delta" label={getLabelByKey("delta")} control={control} type="number" step={STEP} required readonly={allReadonly} />
+        <>
+          <InputField name="delta" label={getLabelByKey("delta")} control={control} type="number" step={STEP} required readonly={allReadonly} />
+          <InputField name="mu" label={getLabelByKey("mu")} control={control} type="number" step={STEP} required readonly={allReadonly} />
+        </>
       )}
 
       {selectedModel === ModelKind.SEIRV && (

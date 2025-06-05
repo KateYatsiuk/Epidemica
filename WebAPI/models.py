@@ -24,7 +24,7 @@ class Simulation(db.Model):
     delta = db.Column(db.Float)  # SEIQR
     v_rate = db.Column(db.Float)  # SEIRV
     h_rate = db.Column(db.Float)  # SEIHR
-    mu = db.Column(db.Float)  # SEIHR
+    mu = db.Column(db.Float)  # SEIHR, SEIQR
     days = db.Column(db.Integer, nullable=False)
 
     max_infected = db.Column(db.Float, nullable=False)

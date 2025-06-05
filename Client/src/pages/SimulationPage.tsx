@@ -46,8 +46,8 @@ const SimulationPage = () => {
         days: simulation.days,
         sigma: simulation.sigma,
         delta: simulation.delta,
-        vRate: simulation.vRate,
-        hRate: simulation.hRate,
+        vRate: simulation.v_rate,
+        hRate: simulation.h_rate,
         mu: simulation.mu,
       };
 

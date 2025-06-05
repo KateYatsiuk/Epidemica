@@ -15,13 +15,13 @@ def seir_model(y, t, beta, sigma, gamma, N):
     return [dSdt, dEdt, dIdt, dRdt]
 
 
-def seiqr_model(y, t, beta, sigma, gamma, delta, N):
+def seiqr_model(y, t, beta, sigma, gamma, delta, mu_q, N):
     S, E, I, Q, R = y
     dSdt = -beta * S * I / N
     dEdt = beta * S * I / N - sigma * E
     dIdt = sigma * E - gamma * I - delta * I
-    dQdt = delta * I - gamma * Q
-    dRdt = gamma * (I + Q)
+    dQdt = delta * I - mu_q * Q
+    dRdt = gamma * I + mu_q * Q
     return [dSdt, dEdt, dIdt, dQdt, dRdt]
 
 

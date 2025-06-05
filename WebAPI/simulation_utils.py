@@ -77,7 +77,7 @@ def run_simulation(
         "seiqr": {
             "func": seiqr_model,
             "y0": [initialS, initialI, 0, 0, 0],
-            "args": (beta, sigma, gamma, delta, n),
+            "args": (beta, sigma, gamma, delta, mu, n),
             "compartments": ["S", "E", "I", "Q", "R"],
         },
         "seirv": {

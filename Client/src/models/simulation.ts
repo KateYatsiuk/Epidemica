@@ -63,7 +63,7 @@ export const dataKeyColors: Record<string, LineConfig> = {
 export const modelFieldMap: Record<ModelKind, (keyof SimulationFormValues)[]> = {
   [ModelKind.SIR]: ["model", "beta", "gamma", "days", "n", "initialS", "initialI"],
   [ModelKind.SEIR]: ["model", "beta", "gamma", "sigma", "days", "n", "initialS", "initialI"],
-  [ModelKind.SEIQR]: ["model", "beta", "gamma", "sigma", "delta", "days", "n", "initialS", "initialI"],
+  [ModelKind.SEIQR]: ["model", "beta", "gamma", "sigma", "delta", "mu", "days", "n", "initialS", "initialI"],
   [ModelKind.SEIHR]: ["model", "beta", "gamma", "sigma", "hRate", "mu", "days", "n", "initialS", "initialI"],
   [ModelKind.SEIRV]: ["model", "beta", "gamma", "sigma", "vRate", "days", "n", "initialS", "initialI"],
 };
@@ -117,7 +117,7 @@ export const modelParameters = [
   { key: "delta", label: "Коефіцієнт карантину (δ)" },
   { key: "v_rate", label: "Коефіцієнт вакцинації" },
   { key: "h_rate", label: "Коефіцієнт госпіталізації" },
-  { key: "mu", label: "Коефіцієнт одужання з лікарні (μ)" },
+  { key: "mu", label: "Коефіцієнт одужання з лікарні/карантину (μ)" },
   { key: "max_infected", label: "Пік інфікованих" },
   { key: "peak_day", label: "День піку" },
   { key: "final_susceptible", label: "Кінцевих S" },

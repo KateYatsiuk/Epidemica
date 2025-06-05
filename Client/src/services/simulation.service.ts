@@ -13,9 +13,14 @@ export const prepareSimulationData = (formValues: SimulationFormValues): Record<
   };
 
   if ([ModelKind.SEIR, ModelKind.SEIHR, ModelKind.SEIQR, ModelKind.SEIRV].includes(model)) params.sigma = formValues.sigma!;
-  if (model === ModelKind.SEIQR) params.delta = formValues.delta!;
+  if (model === ModelKind.SEIQR) {
+    params.delta = formValues.delta!;
+    params.mu = formValues.mu!;
+  }
   if (model === ModelKind.SEIRV) params.vRate = formValues.vRate!;
-  if (model === ModelKind.SEIHR) params.hRate = formValues.hRate!;
-
+  if (model === ModelKind.SEIHR) {
+    params.hRate = formValues.hRate!;
+    params.mu = formValues.mu!;
+  }
   return params;
 };
